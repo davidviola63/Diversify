@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Observable, of } from 'rxjs'; // Aggiunto per mockare la verifica del database
+import { Observable, of, map} from 'rxjs'; // Aggiunto per mockare la verifica del database
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -15,6 +15,7 @@ import { AuthService } from '../services/auth.service';
 export class RegistrazioneFormComponent {
   moduloRegistrazione: FormGroup;
 
+  registrationError: string = '';
   isPasswordVisible: boolean = false;
   isConfermaPasswordVisible: boolean = false;
 
@@ -34,17 +35,16 @@ export class RegistrazioneFormComponent {
         ],
       ],
       confermaPassword: ['', [Validators.required]],
-      cf: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9]{16}$'), this.uppercaseValidator,]], // Codice fiscale di 16 caratteri
-      username: ['', [Validators.required, Validators.minLength(5)]], // Username di almeno 5 caratteri
+      cf: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9]{16}$'), this.uppercaseValidator,], [this.cfValidator()]], // Codice fiscale di 16 caratteri
+      username: ['', [Validators.required, Validators.minLength(5)] ,[this.usernameValidator()]], // Username di almeno 5 caratteri
     }, {
       validators: this.passwordsMustMatch,  // Validatore per le password
-      asyncValidators: [this.cfValidator(), this.usernameValidator()] 
     });
   }
 
   // Funzione per inviare i dati
   inviaDati(): void {
-    //if (this.moduloRegistrazione.valid) {
+
       const formData = this.moduloRegistrazione.value;
       const user = {
         name: formData.nome,
@@ -57,6 +57,8 @@ export class RegistrazioneFormComponent {
         risposta: formData.risposta
       };
 
+       this.registrationError = '';
+
       this.authService.register(user).subscribe(
         response => {
           alert(response.message);
@@ -64,11 +66,10 @@ export class RegistrazioneFormComponent {
         },
         error => {
           console.log('Errore nella registrazione', error);
+          this.registrationError = error.error?.message || 'Errore durante la registrazione.';
         }
       );
-    //} else {
-      //console.log('Modulo non valido');
-    //}
+
   }
 
   // Validatore per verificare se le password corrispondono
@@ -107,34 +108,36 @@ export class RegistrazioneFormComponent {
   }
 
   // Funzione per il controllo dell'errore personalizzato per Codice Fiscale
-  cfValidator(): Validators {
-    return (control: AbstractControl) => {
-      const codiceFiscale = control.value;
-      if (codiceFiscale) {
-        this.verificaCodiceFiscaleEsistente(codiceFiscale).subscribe((exists) => {
-          if (exists) {
-            control.setErrors({ cfEsistente: true });
-          }
-        });
-      }
-      return null;
-    };
-  }
+cfValidator(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+
+    const codiceFiscale = control.value;
+
+    if (!codiceFiscale) {
+      return of(null);
+    }
+
+    return this.verificaCodiceFiscaleEsistente(codiceFiscale).pipe(
+      map(exists => exists ? { cfEsistente: true } : null)
+    );
+  };
+}
 
   // Funzione per il controllo dell'errore personalizzato per Username
-  usernameValidator(): Validators {
-    return (control: AbstractControl) => {
-      const username = control.value;
-      if (username) {
-        this.verificaUsernameEsistente(username).subscribe((exists) => {
-          if (exists) {
-            control.setErrors({ usernameEsistente: true });
-          }
-        });
-      }
-      return null;
-    };
-  }
+usernameValidator(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+
+    const username = control.value;
+
+    if (!username) {
+      return of(null);
+    }
+
+    return this.verificaUsernameEsistente(username).pipe(
+      map(exists => exists ? { usernameEsistente: true } : null)
+    );
+  };
+}
 
   togglePasswordVisibility(field: 'password' | 'confermaPassword'): void {
     if (field === 'password') {
