@@ -162,6 +162,10 @@
 
       <!-- Pulsante di Registrazione -->
       <button type="submit" class="btn btn-primary" [disabled]="moduloRegistrazione.invalid">Registrati</button>
+      <!-- Errore restituito dal backend -->
+    <div *ngIf="registrationError" class="error-message">
+        {{ registrationError }}
+    </div>
     </form>
   </div>
   
