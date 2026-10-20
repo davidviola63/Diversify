@@ -1,0 +1,46 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: diversify-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: diversifydb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval 'db.adminCommand({ ping: 1 }).ok' | grep 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  chatbot:
+    build:
+      context: ./diversify-chatbot
+    container_name: diversify-chatbot
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+
+  backend:
+    build:
+      context: ./diversify-be
+    container_name: diversify-backend
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      chatbot:
+        condition: service_started
+    environment:
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_DATABASE: diversifydb
+      SERVER_PORT: 8080
+      CHATBOT_URL: http://chatbot:5000
+    ports:
+      - "8080:8080"
+
+volumes:
+  mongo-data:
