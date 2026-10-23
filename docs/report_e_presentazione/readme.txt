@@ -1,0 +1,1 @@
+Nella seguente cartella verranno analizzate le evidenze e stilato il report finale con la presentazione per l'esame.

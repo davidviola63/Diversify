@@ -1,0 +1,1 @@
+Le evidenze raccoglieranno il materiale e le prove necessarie a raccogliere dati e a dimostrare la veridicità dei dati. Qui raccoglieremo log grezzi, output tool, screenshot e grafici con nomi che indicano commit e scenario. Ogni qualvolta si effettuerà un esperimento verrà settata la cartella necessaria per rendere le prove rintracciabili facilmente.
