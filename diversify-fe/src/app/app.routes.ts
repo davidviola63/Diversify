@@ -1,104 +1,93 @@
 import { Routes } from '@angular/router';
-import { HomepageComponent } from './homepage/homepage.component';
-import { PostComponent } from './post/post.component';
-import { LoginFormComponent } from './login-form/login-form.component';
-import { RegistrazioneFormComponent } from './registrazione-form/registrazione-form.component';
-import { SchedaAreaPersonaleComponent } from './scheda-area-personale/scheda-area-personale.component';
-import { PaginaProfiloAmministratoreComponent } from './pagina-profilo-amministratore/pagina-profilo-amministratore.component';
-import { ChiSiamoComponent } from './chi-siamo/chi-siamo.component';
-import { GeneraleAmministratoreComponent } from './generale-amministratore/generale-amministratore.component';
-import { FormPostComponent } from './form-post/form-post.component';
-import { GestionePasswordFormComponent } from './gestione-password-form/gestione-password-form.component';
-import { ForumComponent } from './forum/forum.component';
-import { ForumAccessGuard } from './guards/forum-access.guard'; 
+import { ForumAccessGuard } from './guards/forum-access.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
-import { CampagnaCrowdfundingComponent } from './campagna-crowdfunding/campagna-crowdfunding.component';
-import { DocumentoInformativoComponent } from './documento-informativo/documento-informativo.component';
-import { DonazioneCampagnaComponent } from './donazione-campagna/donazione-campagna.component';
-
 
 export const routes: Routes = [
-  { path: '', component: HomepageComponent },
- 
-  
-  { 
-    path: 'post/:postId/:selectedForumId', 
-    component: PostComponent, 
-    canActivate: [ForumAccessGuard] 
+  {
+    path: '',
+    loadComponent: () =>
+      import('./homepage/homepage.component').then(m => m.HomepageComponent)
   },
-
-  { 
-    path: 'loggato', 
-    component: LoginFormComponent, 
+  {
+    path: 'post/:postId/:selectedForumId',
+    loadComponent: () =>
+      import('./post/post.component').then(m => m.PostComponent),
+    canActivate: [ForumAccessGuard]
+  },
+  {
+    path: 'loggato',
+    loadComponent: () =>
+      import('./login-form/login-form.component').then(m => m.LoginFormComponent),
     canActivate: [AuthGuard]
   },
-
-  { 
+  {
     path: 'registrato',
-     component: RegistrazioneFormComponent,
-     canActivate: [AuthGuard]
+    loadComponent: () =>
+      import('./registrazione-form/registrazione-form.component').then(m => m.RegistrazioneFormComponent),
+    canActivate: [AuthGuard]
   },
-
   {
     path: 'scheda-area-personale',
-    component: SchedaAreaPersonaleComponent,
+    loadComponent: () =>
+      import('./scheda-area-personale/scheda-area-personale.component').then(m => m.SchedaAreaPersonaleComponent),
     canActivate: [AuthGuard]
-   },
-
-   {
-    path: 'pagina-profilo-amministratore',
-    component: PaginaProfiloAmministratoreComponent,
-    canActivate: [AdminGuard], 
   },
-
+  {
+    path: 'pagina-profilo-amministratore',
+    loadComponent: () =>
+      import('./pagina-profilo-amministratore/pagina-profilo-amministratore.component').then(m => m.PaginaProfiloAmministratoreComponent),
+    canActivate: [AdminGuard]
+  },
   {
     path: 'generale-amministratore',
-    component: GeneraleAmministratoreComponent,
-    canActivate: [AdminGuard], 
+    loadComponent: () =>
+      import('./generale-amministratore/generale-amministratore.component').then(m => m.GeneraleAmministratoreComponent),
+    canActivate: [AdminGuard]
   },
-
-  { 
+  {
     path: 'chi-siamo',
-    component: ChiSiamoComponent
+    loadComponent: () =>
+      import('./chi-siamo/chi-siamo.component').then(m => m.ChiSiamoComponent)
   },
-
-  { 
-     path: 'creapost',
-     component: FormPostComponent,
-     canActivate: [ForumAccessGuard]
+  {
+    path: 'creapost',
+    loadComponent: () =>
+      import('./form-post/form-post.component').then(m => m.FormPostComponent),
+    canActivate: [ForumAccessGuard]
   },
-
-  { 
-    path: 'recupero-password', 
-    component: GestionePasswordFormComponent,
+  {
+    path: 'recupero-password',
+    loadComponent: () =>
+      import('./gestione-password-form/gestione-password-form.component').then(m => m.GestionePasswordFormComponent),
     canActivate: [AuthGuard]
   },
-  
-  { 
-    path: 'forum', 
-    component: ForumComponent, 
-    canActivate: [ForumAccessGuard] 
-  },
-
-  { 
-    path: 'forum/:forumId', 
-    component: ForumComponent, 
-    canActivate: [ForumAccessGuard] 
-  },
-
   {
-    path: 'campagne/:paese', 
-    component: CampagnaCrowdfundingComponent,
-    canActivate: [AuthGuard], 
+    path: 'forum',
+    loadComponent: () =>
+      import('./forum/forum.component').then(m => m.ForumComponent),
+    canActivate: [ForumAccessGuard]
   },
-
+  {
+    path: 'forum/:forumId',
+    loadComponent: () =>
+      import('./forum/forum.component').then(m => m.ForumComponent),
+    canActivate: [ForumAccessGuard]
+  },
+  {
+    path: 'campagne/:paese',
+    loadComponent: () =>
+      import('./campagna-crowdfunding/campagna-crowdfunding.component').then(m => m.CampagnaCrowdfundingComponent),
+    canActivate: [AuthGuard]
+  },
   {
     path: 'documentoinformativo/:paese',
-    component: DocumentoInformativoComponent,
+    loadComponent: () =>
+      import('./documento-informativo/documento-informativo.component').then(m => m.DocumentoInformativoComponent)
   },
   {
     path: 'donazione-campagna',
-    component: DonazioneCampagnaComponent,
+    loadComponent: () =>
+      import('./donazione-campagna/donazione-campagna.component').then(m => m.DonazioneCampagnaComponent)
   }
 ];
