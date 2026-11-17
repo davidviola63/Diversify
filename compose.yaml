@@ -47,7 +47,7 @@
       - "4200:80"
     depends_on:
       - backend
-      - chatbot
+
 
 volumes:
   mongo_data:
