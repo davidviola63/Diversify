@@ -14,13 +14,31 @@
 
   <script type="text/javascript">
     var _iub = _iub || [];
-    _iub.csConfiguration = {"siteId":3883471,"cookiePolicyId":47658031,"lang":"en-GB","storage":{"useSiteId":true}};
-   </script>
-   <script type="text/javascript" src="https://cs.iubenda.com/autoblocking/3883471.js"></script>
-   <script type="text/javascript" src="//cdn.iubenda.com/cs/gpp/stub.js"></script>
-    
+    _iub.csConfiguration = {"siteId":3883471,"cookiePolicyId":80038238,"lang":"it","storage":{"useSiteId":true}};
+  </script>
+  <script type="text/javascript" src="https://cs.iubenda.com/autoblocking/3883471.js"></script>
+  <script type="text/javascript" src="//cdn.iubenda.com/cs/gpp/stub.js"></script>
 </head>
 <body class="mat-typography">
   <app-root></app-root>
+
+  <!-- Caricamento condiviso dello script per i link iubenda presenti nel footer -->
+  <script type="text/javascript">
+    (function (w, d) {
+      var loader = function () {
+        var s = d.createElement("script");
+        var tag = d.getElementsByTagName("script")[0];
+        s.src = "https://cdn.iubenda.com/iubenda.js";
+        tag.parentNode.insertBefore(s, tag);
+      };
+      if (w.addEventListener) {
+        w.addEventListener("load", loader, false);
+      } else if (w.attachEvent) {
+        w.attachEvent("onload", loader);
+      } else {
+        w.onload = loader;
+      }
+    })(window, document);
+  </script>
 </body>
 </html>
