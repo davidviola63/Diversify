@@ -17,7 +17,6 @@ import { AuthService } from '../services/auth.service';
 export class PostComponent {
   comments: any[] = [];
  
-  postLikes = 0;
   hasLikedPost = false;
   newComment = { text: '' };
  
@@ -45,7 +44,6 @@ export class PostComponent {
         this.posts = data;
         this.post = this.posts.find((item : any) => item.idPost === this.postId);
         this.comments = this.post.commenti;
-        this.postLikes = this.post.like;
 
         this.userService.getUtenteById(this.post.idAutore).subscribe({
           next: (user) => {
@@ -145,8 +143,4 @@ export class PostComponent {
     });
   }
  
-  // Mi Piace per i commenti
-  likeComment(comment: any) {
-    comment.likes++;
-  }
 }
