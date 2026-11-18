@@ -10,15 +10,18 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+
         http
-                .csrf(AbstractHttpConfigurer::disable) // Disabilita CSRF (solo per sviluppo)
+                .cors(cors -> {})
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll() // Rotte pubbliche
-                        .anyRequest().authenticated() // Tutte le altre rotte richiedono autenticazione
+                        .requestMatchers("/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .formLogin(AbstractHttpConfigurer::disable) // Disabilita il login basato su form
-                .httpBasic(AbstractHttpConfigurer::disable); // Disabilita l'autenticazione HTTP Basic
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
