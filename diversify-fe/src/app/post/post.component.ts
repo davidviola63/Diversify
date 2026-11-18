@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CommentoComponent } from '../commento/commento.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ForumService } from '../services/forum.service';
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-post',
   standalone: true,
-  imports: [CommonModule, FormsModule, CommentoComponent],
+  imports: [CommonModule, FormsModule, CommentoComponent, RouterLink],
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.css'],
 })
