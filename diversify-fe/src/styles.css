@@ -13,3 +13,72 @@ html, body {
     border: 1px solid black; /* Optional border for debugging visibility */
 }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+@media print {
+    @page {
+        margin: 1.5cm;
+    }
+
+    html,
+    body {
+        height: auto !important;
+        min-height: 0 !important;
+        color: #000 !important;
+        background: #fff !important;
+        font-size: 12pt;
+    }
+
+    app-header,
+    app-footer,
+    .menu-container,
+    .menu-icon-container,
+    .back-link,
+    button,
+    #dropdown-container,
+    .ol-control {
+        display: none !important;
+    }
+
+    .homepage-container {
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    app-map {
+        height: 16cm;
+        flex: none;
+        padding: 0;
+    }
+
+    #map-container {
+        height: 16cm;
+    }
+
+    #map {
+        height: 100%;
+        border: 0;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: underline;
+    }
+
+    h1,
+    h2,
+    h3 {
+        break-after: avoid;
+    }
+
+    p,
+    li {
+        orphans: 3;
+        widows: 3;
+    }
+
+    img,
+    table,
+    figure {
+        break-inside: avoid;
+    }
+}
