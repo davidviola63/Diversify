@@ -21,27 +21,20 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
     html,
     body {
-        height: auto !important;
-        min-height: 0 !important;
-        color: #000 !important;
-        background: #fff !important;
+        height: auto;
+        min-height: 0;
+        color: #000;
+        background: #fff;
         font-size: 12pt;
     }
 
     app-header,
     app-footer,
-    .menu-container,
-    .menu-icon-container,
     .back-link,
     button,
     #dropdown-container,
     .ol-control {
-        display: none !important;
-    }
-
-    .homepage-container {
-        height: auto !important;
-        min-height: 0 !important;
+        display: none;
     }
 
     app-map {
