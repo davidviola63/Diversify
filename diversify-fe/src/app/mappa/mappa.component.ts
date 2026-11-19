@@ -24,6 +24,15 @@ const ueExtent = [
   6398696.460179701,   // Longitudine Est (Cipro)
   9053583.87463804    // Latitudine Nord (taglia parte della Scandinavia)
 ];
+
+// Associa solo i livelli di gravità supportati a risorse realmente esistenti.
+const severityPinAssets: Record<string, string> = {
+  '1': 'benchmark-verde.png',
+  '2': 'benchmark-giallo.png',
+  '3': 'benchmark-arancione.png',
+  '4': 'benchmark-rosso.png',
+  '5': 'benchmark-nero.png'
+};
  
 @Component({
   selector: 'app-map',
@@ -187,11 +196,12 @@ export class MapComponent implements OnInit, AfterViewInit {
    
       vectorSource.addFeature(firstPin);
    
-      // Aggiungi i pin dinamici in base alla categoria
-      const criticita = country[this.category];
-   
-      // Se criticita è 0, non aggiungere il secondo pin
-      if (criticita !== 0) {
+      // Aggiungi il pin di criticità solo per i livelli supportati (1-5).
+      // Valori come 0, "0" o null non devono generare richieste verso /benchmark/.
+      const criticita = String(country[this.category] ?? '');
+      const pinColor = severityPinAssets[criticita];
+
+      if (pinColor) {
         const secondPin = new Feature({
           geometry: new Point([
             country.coordinates[0] + 50000,
@@ -199,35 +209,14 @@ export class MapComponent implements OnInit, AfterViewInit {
           ]),
           name: `${country.name}`
         });
-   
-        let pinColor: string;
-        switch (criticita) {
-          case '1':
-            pinColor = 'benchmark-verde.png';
-            break;
-          case '2':
-            pinColor = 'benchmark-giallo.png';
-            break;
-          case '3':
-            pinColor = 'benchmark-arancione.png';
-            break;
-          case '4':
-            pinColor = 'benchmark-rosso.png';
-            break;
-          case '5':
-            pinColor = 'benchmark-nero.png';
-            break;  
-          default:
-            pinColor = '';
-        }
-   
+
         secondPin.setStyle(new Style({
           image: new Icon({
             src: `benchmark/${pinColor}`,
             scale: 0.4
           })
         }));
-   
+
         vectorSource.addFeature(secondPin);
       }
     });
