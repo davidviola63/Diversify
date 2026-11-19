@@ -42,7 +42,7 @@ const severityPinAssets: Record<string, string> = {
 })
 export class MapComponent implements OnInit, AfterViewInit {
   private map: Map | undefined;
-  private staticLayer: ImageLayer | undefined;
+  private staticLayer: ImageLayer<ImageStatic> | undefined;
   private osmLayer: TileLayer | undefined;
   private countries: Array<any> | undefined;  // Lista dei paesi
   private category: string = 'criticitaGenerale'; // Categoria selezionata
