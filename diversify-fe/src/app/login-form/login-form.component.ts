@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service'; // Importa il servizio A
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.css'],
   standalone: true, //viene utilizzata per dichiarare che un componente non dipende da un modulo di livello superiore
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, RouterLink]
 })
  
 export class LoginFormComponent {
@@ -60,13 +60,7 @@ export class LoginFormComponent {
   hasError(controlName: string, errorCode: string): boolean {
     const control = this.loginForm.get(controlName);
     return ((control?.dirty || control?.touched) && control?.hasError(errorCode)) ?? false;
-  }
- 
-  // Funzione per navigare alla pagina di recupero password
-  recoverPassword(): void {
-    this.router.navigate(['/recupero-password']);
-  }
- 
+  } 
   /**
  * Funzione che abilita/disabilita la visibilità della password.
  * Accetta l'ID dell'elemento come parametro (per futura espandibilità).
@@ -75,11 +69,5 @@ export class LoginFormComponent {
     if (field === 'password') {
       this.isPasswordVisible = !this.isPasswordVisible;
     }
-  }
- 
-  // Funzione per navigare alla pagina di registrazione
-  navigateToRegistration(): void {
-    this.router.navigate(['/registrato']);
-  }
- 
+  } 
 }
