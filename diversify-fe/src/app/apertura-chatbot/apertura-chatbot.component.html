@@ -13,6 +13,8 @@
         [src]="message.sender === 'user' ? 'User_chatbot.png' : 'brigid.png'"
         [alt]="message.sender === 'user' ? 'Utente' : 'Brigid'"
         class="avatar"
+        loading="lazy"
+        decoding="async"
       />
       <p>{{ message.content }}</p>
     </div>
