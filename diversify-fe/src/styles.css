@@ -22,3 +22,66 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   font-size: 24px;
   line-height: 1;
 }
+
+@media print {
+    @page {
+        margin: 1.5cm;
+    }
+
+    html,
+    body {
+        height: auto;
+        min-height: 0;
+        color: #000;
+        background: #fff;
+        font-size: 12pt;
+    }
+
+    app-header,
+    app-footer,
+    .back-link,
+    button,
+    #dropdown-container,
+    .ol-control {
+        display: none;
+    }
+
+    app-map {
+        height: 16cm;
+        flex: none;
+        padding: 0;
+    }
+
+    #map-container {
+        height: 16cm;
+    }
+
+    #map {
+        height: 100%;
+        border: 0;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: underline;
+    }
+
+    h1,
+    h2,
+    h3 {
+        break-after: avoid;
+    }
+
+    p,
+    li {
+        orphans: 3;
+        widows: 3;
+    }
+
+    img,
+    table,
+    figure {
+        break-inside: avoid;
+    }
+}
+
