@@ -2,6 +2,8 @@ import { Component, OnInit, AfterViewInit, ComponentRef, HostListener } from '@a
 import { OSM } from 'ol/source';
 import { View } from 'ol';
 import { Tile as TileLayer } from 'ol/layer';
+import ImageLayer from 'ol/layer/Image';
+import ImageStatic from 'ol/source/ImageStatic';
 import Map from 'ol/Map';
 import { Feature } from 'ol';
 import { Point } from 'ol/geom';
@@ -22,6 +24,15 @@ const ueExtent = [
   6398696.460179701,   // Longitudine Est (Cipro)
   9053583.87463804    // Latitudine Nord (taglia parte della Scandinavia)
 ];
+
+// Associa solo i livelli di gravità supportati a risorse realmente esistenti.
+const severityPinAssets: Record<string, string> = {
+  '1': 'benchmark-verde.png',
+  '2': 'benchmark-giallo.png',
+  '3': 'benchmark-arancione.png',
+  '4': 'benchmark-rosso.png',
+  '5': 'benchmark-nero.png'
+};
  
 @Component({
   selector: 'app-map',
@@ -31,6 +42,8 @@ const ueExtent = [
 })
 export class MapComponent implements OnInit, AfterViewInit {
   private map: Map | undefined;
+  private staticLayer: ImageLayer<ImageStatic> | undefined;
+  private osmLayer: TileLayer | undefined;
   private countries: Array<any> | undefined;  // Lista dei paesi
   private category: string = 'criticitaGenerale'; // Categoria selezionata
   private vectorLayer: VectorLayer | undefined;
@@ -81,12 +94,18 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
  
   private updateMapWithCountry(country: string): void {
-    // Trova il paese selezionato e aggiorna la mappa
-    const countryCoordinates = this.getCoordinatesForCountry(country);
-    if (this.map) {
-      this.map.getView().setCenter(countryCoordinates); // centrare la mappa sul paese selezionato
-      this.map.getView().setZoom(6); // Zoom per il paese selezionato
+    if (!this.map || !country.trim()) {
+      return;
     }
+
+    const countryCoordinates = this.getCoordinatesForCountry(country);
+    const view = this.map.getView();
+
+    view.setCenter(countryCoordinates);
+    view.setZoom(6);
+
+    // Le tile dettagliate vengono richieste solo dopo la selezione di un paese.
+    this.activateDetailedMap();
   }
  
   ngAfterViewInit(): void {
@@ -99,19 +118,25 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
  
   private initializeMap(): void {
-    const osmLayer = new TileLayer({
-      source: new OSM()
+    // La cartografia statica fornisce subito il contesto geografico iniziale.
+    // Le tile OSM vengono aggiunte solo quando l'utente seleziona un paese.
+    this.staticLayer = new ImageLayer({
+      source: new ImageStatic({
+        url: '/mappa-europa.svg',
+        imageExtent: ueExtent,
+        projection: 'EPSG:3857'
+      })
     });
- 
+
     const view = new View({
       center: [1000000, 5000000],  // Centro approssimativo per focalizzare l'UE
-      zoom: 2,                 // Zoom bilanciato per vedere bene le capitali
+      zoom: 2,                     // Zoom bilanciato per vedere bene le capitali
       extent: ueExtent
     });
- 
+
     this.map = new Map({
       target: 'map',
-      layers: [osmLayer],
+      layers: [this.staticLayer],
       view: view,
       interactions: []
     });
@@ -129,6 +154,24 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.updatePins();  // Aggiungi i pin iniziali
   }
  
+  private activateDetailedMap(): void {
+    if (!this.map) {
+      return;
+    }
+
+    if (!this.osmLayer) {
+      this.osmLayer = new TileLayer({
+        source: new OSM(),
+        preload: 0
+      });
+      // Inserisce OSM tra la base statica e i marker, che devono restare cliccabili.
+      this.map.getLayers().insertAt(1, this.osmLayer);
+    }
+
+    // La cartografia statica resta sotto le tile durante il caricamento.
+    this.osmLayer.setVisible(true);
+  }
+
   private updatePins(): void {
  
     const vectorSource = new VectorSource();
@@ -154,11 +197,12 @@ export class MapComponent implements OnInit, AfterViewInit {
    
       vectorSource.addFeature(firstPin);
    
-      // Aggiungi i pin dinamici in base alla categoria
-      const criticita = country[this.category];
-   
-      // Se criticita è 0, non aggiungere il secondo pin
-      if (criticita !== 0) {
+      // Aggiungi il pin di criticità solo per i livelli supportati (1-5).
+      // Valori come 0, "0" o null non devono generare richieste verso /benchmark/.
+      const criticita = String(country[this.category] ?? '');
+      const pinColor = severityPinAssets[criticita];
+
+      if (pinColor) {
         const secondPin = new Feature({
           geometry: new Point([
             country.coordinates[0] + 50000,
@@ -166,35 +210,14 @@ export class MapComponent implements OnInit, AfterViewInit {
           ]),
           name: `${country.name}`
         });
-   
-        let pinColor: string;
-        switch (criticita) {
-          case '1':
-            pinColor = 'benchmark-verde.png';
-            break;
-          case '2':
-            pinColor = 'benchmark-giallo.png';
-            break;
-          case '3':
-            pinColor = 'benchmark-arancione.png';
-            break;
-          case '4':
-            pinColor = 'benchmark-rosso.png';
-            break;
-          case '5':
-            pinColor = 'benchmark-nero.png';
-            break;  
-          default:
-            pinColor = '';
-        }
-   
+
         secondPin.setStyle(new Style({
           image: new Icon({
             src: `benchmark/${pinColor}`,
             scale: 0.4
           })
         }));
-   
+
         vectorSource.addFeature(secondPin);
       }
     });
@@ -281,6 +304,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
  
   resetMap(): void {
+    // Nasconde OSM senza distruggerlo: le visite successive riutilizzano il layer.
+    this.osmLayer?.setVisible(false);
+
     const view = this.map?.getView();
     if (view) {
       view.setCenter([1000000, 5000000]);  // Posizione iniziale
