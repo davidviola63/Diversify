@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ForumService } from '../services/forum.service';
-import { DocumentoInformativoService } from '../services/documento-informativo.service';
 
 @Component({
   selector: 'app-popup-grid',
@@ -14,8 +13,7 @@ import { DocumentoInformativoService } from '../services/documento-informativo.s
 export class PopupGridComponent {
   constructor(
     private router: Router,
-    private forumService: ForumService,
-    private documentoInformativoService: DocumentoInformativoService
+    private forumService: ForumService
   ) {}
 
   @Input() tipoCriticita: string = '';
@@ -26,14 +24,11 @@ export class PopupGridComponent {
 
   isVisible: boolean = true; // Variabile di stato per gestire la visibilità del popup.
   forum: any;
-  documentiInformativi: any[] = []; // Per salvare i documenti informativi dal backend.
-  videoLink: string | null = null; // Link del video caricato dal backend.
 
   buttons: { label: string; color: string; size: string; action?: () => void }[] = [];
 
   ngOnInit() {
     this.loadForumData();
-    this.loadDocumentiInformativi();
   }
 
   private loadForumData(): void {
@@ -41,27 +36,6 @@ export class PopupGridComponent {
       this.forum = data;
       this.updateButtons();
     });
-  }
-
-  private loadDocumentiInformativi(): void {
-    if (this.idPaese) {
-      console.log('Effettuando chiamata per il paese:', this.idPaese); // Debug iniziale
-      this.documentoInformativoService.getDocumentiInformativi(this.idPaese).subscribe(
-        (data) => {
-          console.log('Chiamata completata con successo');
-          this.documentiInformativi = data;
-          console.log('Documenti Informativi ricevuti:', this.documentiInformativi);
-          this.videoLink = data.length > 0 ? data[0].linkVideo : null;
-          console.log('Link Video:', this.videoLink);
-          this.updateButtons();
-        },
-        (error) => {
-          console.error('Errore nel caricamento dei documenti informativi:', error);
-        }
-      );
-    } else {
-      console.log('ID Paese non fornito.');
-    }
   }
 
   private updateButtons(): void {
@@ -136,10 +110,6 @@ export class PopupGridComponent {
     this.router.navigate(['/forum'], {
       queryParams: { country: this.countryName, forumId: forumId },
     });
-  }
-
-  openVideo(link: string): void {
-    window.open(link, '_blank'); // Apre il link video in una nuova scheda.
   }
 
   // Naviga alla lista completa delle campagne di crowdfunding.
