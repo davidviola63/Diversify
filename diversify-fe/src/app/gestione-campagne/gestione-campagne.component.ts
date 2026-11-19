@@ -39,10 +39,6 @@ export class GestioneCampagneComponent implements OnInit {
     'Portogallo', 'Repubblica Ceca', 'Romania', 'Slovacchia', 'Slovenia',
     'Spagna', 'Svezia',
   ];
-  isDropdownVisible: boolean = false;
-  searchTerm: string = '';
-  filteredCountries: string[] = [];
-  imagePreview: string | undefined;
 
   constructor(private campagnaService: CampagnaService) {}
 
@@ -198,46 +194,5 @@ filterAndSortCampaigns(): void {
     }
   }
 
-  // Gestione immagine selezionata
-  onImageSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreview = reader.result as string; // Anteprima dell'immagine
-        this.campaign.backgroundImage = this.imagePreview;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
 
-  toggleDropdown(): void {
-    this.isDropdownVisible = !this.isDropdownVisible;
-  }
-
-  onSearchChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const searchValue = input.value.trim().toLowerCase();
-
-    this.isDropdownVisible = searchValue.length > 0;
-
-    if (searchValue.length === 0) {
-      this.filteredCountries = [];
-      return;
-    }
-
-    this.filteredCountries = this.countries
-      .filter((country) => country.toLowerCase().includes(searchValue))
-      .sort((a, b) => a.toLowerCase().indexOf(searchValue) - b.toLowerCase().indexOf(searchValue));
-  }
-
-  onCountrySelected(country: string): void {
-    this.selectedCountry = country;
-    this.isDropdownVisible = false;
-    this.filterAndSortCampaigns(); // Applica i filtri aggiornati
-  }
-
-  goBack(): void {
-    this.setActiveComponent('gestioneCampagne');
-  }
 }

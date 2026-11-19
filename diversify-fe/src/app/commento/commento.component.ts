@@ -59,9 +59,6 @@ export class CommentoComponent {
   reportReason = '';
   reportedComment: any = null; // Memorizza il commento o il subcommento segnalato
 
-  // Variabile per il messaggio di conferma
-  showConfirmation = false;
-
   // Apre il modale di segnalazione
   openReportModal(comment: any) {
     this.reportedComment = comment; // Memorizza il commento o il subcommento segnalato
@@ -76,12 +73,19 @@ export class CommentoComponent {
   }
 
   confirmReport() {
-    if (this.reportReason.trim()) {
-      this.submitReport(this.comment.idAutore, this.idUser, this.reportReason, this.reportType);
-      this.closeReportModal();
-    } else {
+    if (!this.reportReason.trim()) {
       alert('Per favore, inserisci una motivazione.');
+      return;
     }
+
+    const reportedUserId = this.reportedComment?.idAutore;
+    if (!reportedUserId) {
+      alert("Impossibile identificare l'autore del commento segnalato.");
+      return;
+    }
+
+    this.submitReport(reportedUserId, this.idUser, this.reportReason, this.reportType);
+    this.closeReportModal();
   }
  
   // Funzione per inviare la segnalazione

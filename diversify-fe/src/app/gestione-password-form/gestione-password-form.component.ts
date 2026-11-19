@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, AbstractControl, ValidationErrors, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-gestione-password-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './gestione-password-form.component.html',
   styleUrls: ['./gestione-password-form.component.css'],
 })
@@ -84,27 +83,6 @@ export class GestionePasswordFormComponent {
       return { passwordsNonCoincidenti: true }; // Ritorna errore se le password non corrispondono
     }
     return null;
-  }
-
-  // Getter per accedere facilmente ai controlli del form
-  get emailControl() {
-    return this.forgotPasswordForm.get('email')!;
-  }
-
-  get fiscalCodeControl() {
-    return this.forgotPasswordForm.get('fiscalCode')!;
-  }
-
-  get securityAnswerControl() {
-    return this.securityQuestionForm.get('securityAnswer')!;
-  }
-
-  get newPasswordControl() {
-    return this.resetPasswordForm.get('newPassword')!;
-  }
-
-  get confirmPasswordControl() {
-    return this.resetPasswordForm.get('confirmPassword')!;
   }
 
   // Funzione per alternare la visibilità della password

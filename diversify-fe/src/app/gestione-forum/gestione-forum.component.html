@@ -6,25 +6,25 @@
         <option value="" disabled>-- Seleziona un Paese --</option>
         <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
       </select>
-      <div *ngIf="hasError('country', 'required')" class="error">
+      <div *ngIf="hasError('paese', 'required')" class="error">
         Il Paese è obbligatorio.
       </div>
 
       <label for="forum-title">Titolo Forum:</label>
       <input id="forum-title" type="text" formControlName="titolo" placeholder="Inserisci il titolo">
-      <div *ngIf="hasError('title', 'required')" class="error">
+      <div *ngIf="hasError('titolo', 'required')" class="error">
         Il titolo è obbligatorio.
       </div>
-      <div *ngIf="hasError('title', 'minlength')" class="error">
+      <div *ngIf="hasError('titolo', 'minlength')" class="error">
         Il titolo deve avere almeno 3 caratteri.
       </div>
 
       <label for="forum-description">Descrizione Forum:</label>
       <textarea id="forum-description" formControlName="descrizione" placeholder="Inserisci la descrizione"></textarea>
-      <div *ngIf="hasError('description', 'required')" class="error">
+      <div *ngIf="hasError('descrizione', 'required')" class="error">
         La descrizione è obbligatoria.
       </div>
-      <div *ngIf="hasError('description', 'minlength')" class="error">
+      <div *ngIf="hasError('descrizione', 'minlength')" class="error">
         La descrizione deve avere almeno 10 caratteri.
       </div>
 
@@ -37,7 +37,7 @@
   <div class="posts">
     <h2>Lista dei Forum</h2>
     <ul>
-      <li *ngFor="let forum of forums; let i = index">
+      <li *ngFor="let forum of forums">
         <div class="forum-details">
           <strong>{{ forum.titolo }}</strong> ({{ forum.paese }}): {{ forum.descrizione }}
         </div>

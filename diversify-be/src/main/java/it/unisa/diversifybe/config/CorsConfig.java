@@ -9,11 +9,16 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // Applica a tutti gli endpoint
-                .allowedOrigins("http://localhost:4200") // Consenti richieste dal frontend
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Metodi consentiti
-                .allowedHeaders("*") // Consenti tutti gli header
-                .exposedHeaders("Authorization") // Esponi header specifici (opzionale)
-                .allowCredentials(true); // Consenti l'invio di cookie/credenziali
+        registry.addMapping("/**")
+                .allowedOrigins(
+                        "http://localhost:4200",
+                        "https://jujitsu-onyx-unruly.ngrok-free.dev"
+                )
+                .allowedMethods(
+                        "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
+                )
+                .allowedHeaders("*")
+                .exposedHeaders("Authorization")
+                .allowCredentials(true);
     }
 }

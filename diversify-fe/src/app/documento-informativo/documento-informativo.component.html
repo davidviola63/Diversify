@@ -9,7 +9,13 @@
   <div class="document-content">
     <h2>Contenuto del Documento</h2>
     <div *ngIf="selectedDocument" class="document-text">
-      <img *ngIf="selectedDocument.image" [src]="selectedDocument.image" alt="Immagine del documento" class="document-image">
+      <img 
+        *ngIf="selectedDocument.image"
+        [src]="selectedDocument.image"
+        alt="Immagine del documento" 
+        class="document-image"
+        loading="lazy"
+        decoding="async">
       <div [innerHTML]="selectedDocument.content"></div>
     </div>
     <div *ngIf="!selectedDocument && isVideoContainerEmpty()">

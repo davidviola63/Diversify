@@ -14,6 +14,15 @@ html, body {
 }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+/* Pulsanti zoom della mappa (OpenLayers): area cliccabile 44x44px */
+.ol-zoom .ol-zoom-in,
+.ol-zoom .ol-zoom-out {
+  width: 44px;
+  height: 44px;
+  font-size: 24px;
+  line-height: 1;
+}
+
 @media print {
     @page {
         margin: 1.5cm;
@@ -75,3 +84,4 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
         break-inside: avoid;
     }
 }
+
