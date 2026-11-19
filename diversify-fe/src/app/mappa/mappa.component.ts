@@ -2,6 +2,8 @@ import { Component, OnInit, AfterViewInit, ComponentRef, HostListener } from '@a
 import { OSM } from 'ol/source';
 import { View } from 'ol';
 import { Tile as TileLayer } from 'ol/layer';
+import ImageLayer from 'ol/layer/Image';
+import ImageStatic from 'ol/source/ImageStatic';
 import Map from 'ol/Map';
 import { Feature } from 'ol';
 import { Point } from 'ol/geom';
@@ -31,6 +33,8 @@ const ueExtent = [
 })
 export class MapComponent implements OnInit, AfterViewInit {
   private map: Map | undefined;
+  private staticLayer: ImageLayer | undefined;
+  private osmLayer: TileLayer | undefined;
   private countries: Array<any> | undefined;  // Lista dei paesi
   private category: string = 'criticitaGenerale'; // Categoria selezionata
   private vectorLayer: VectorLayer | undefined;
@@ -81,12 +85,18 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
  
   private updateMapWithCountry(country: string): void {
-    // Trova il paese selezionato e aggiorna la mappa
-    const countryCoordinates = this.getCoordinatesForCountry(country);
-    if (this.map) {
-      this.map.getView().setCenter(countryCoordinates); // centrare la mappa sul paese selezionato
-      this.map.getView().setZoom(6); // Zoom per il paese selezionato
+    if (!this.map || !country.trim()) {
+      return;
     }
+
+    const countryCoordinates = this.getCoordinatesForCountry(country);
+    const view = this.map.getView();
+
+    view.setCenter(countryCoordinates);
+    view.setZoom(6);
+
+    // Le tile dettagliate vengono richieste solo dopo la selezione di un paese.
+    this.activateDetailedMap();
   }
  
   ngAfterViewInit(): void {
@@ -99,19 +109,25 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
  
   private initializeMap(): void {
-    const osmLayer = new TileLayer({
-      source: new OSM()
+    // La cartografia statica fornisce subito il contesto geografico iniziale.
+    // Le tile OSM vengono aggiunte solo quando l'utente seleziona un paese.
+    this.staticLayer = new ImageLayer({
+      source: new ImageStatic({
+        url: '/mappa-europa.svg',
+        imageExtent: ueExtent,
+        projection: 'EPSG:3857'
+      })
     });
- 
+
     const view = new View({
       center: [1000000, 5000000],  // Centro approssimativo per focalizzare l'UE
-      zoom: 2,                 // Zoom bilanciato per vedere bene le capitali
+      zoom: 2,                     // Zoom bilanciato per vedere bene le capitali
       extent: ueExtent
     });
- 
+
     this.map = new Map({
       target: 'map',
-      layers: [osmLayer],
+      layers: [this.staticLayer],
       view: view,
       interactions: []
     });
@@ -129,6 +145,23 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.updatePins();  // Aggiungi i pin iniziali
   }
  
+  private activateDetailedMap(): void {
+    if (!this.map) {
+      return;
+    }
+
+    if (!this.osmLayer) {
+      this.osmLayer = new TileLayer({
+        source: new OSM(),
+        preload: 0
+      });
+      this.map.addLayer(this.osmLayer);
+    }
+
+    // La cartografia statica resta sotto le tile durante il caricamento.
+    this.osmLayer.setVisible(true);
+  }
+
   private updatePins(): void {
  
     const vectorSource = new VectorSource();
@@ -281,6 +314,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
  
   resetMap(): void {
+    // Nasconde OSM senza distruggerlo: le visite successive riutilizzano il layer.
+    this.osmLayer?.setVisible(false);
+
     const view = this.map?.getView();
     if (view) {
       view.setCenter([1000000, 5000000]);  // Posizione iniziale
