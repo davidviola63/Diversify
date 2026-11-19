@@ -62,6 +62,11 @@ describe('MappaComponent', () => {
 
     expect(osmLayer).toBeTruthy();
     expect(osmLayer.getVisible()).toBeTrue();
+
+    const layers = (component as any).map.getLayers().getArray();
+    expect(layers.indexOf(osmLayer)).toBeLessThan(
+      layers.indexOf((component as any).vectorLayer)
+    );
   });
 
   it('nasconde e riutilizza il layer OpenStreetMap dopo il reset', () => {

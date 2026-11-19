@@ -164,7 +164,8 @@ export class MapComponent implements OnInit, AfterViewInit {
         source: new OSM(),
         preload: 0
       });
-      this.map.addLayer(this.osmLayer);
+      // Inserisce OSM tra la base statica e i marker, che devono restare cliccabili.
+      this.map.getLayers().insertAt(1, this.osmLayer);
     }
 
     // La cartografia statica resta sotto le tile durante il caricamento.
