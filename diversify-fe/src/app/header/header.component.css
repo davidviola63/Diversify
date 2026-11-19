@@ -273,11 +273,11 @@ li:hover {
 
 /* Aggiungi uno stile per il bottone 'Registrati' */
 .auth-buttons button:last-child {
-  background-color: #28a745; /* Colore verde per 'Registrati' */
+  background-color: #1e7e34; /* era #28a745: contrasto 3,13 → 5,14 */
 }
 
 .auth-buttons button:last-child:hover {
-  background-color: #218838; /* Colore più scuro per il hover di 'Registrati' */
+  background-color: #145523; /* era #218838: contrasto 4,52 → 8,92 */
 }
 
 /* Stile per il link "Home" */
