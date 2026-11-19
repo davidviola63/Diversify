@@ -1,5 +1,5 @@
 .campaign-list-container {
-    width: 80%;
+    width: 90%;
     min-height: 500px; /* Altezza minima aumentata */
     max-height: fit-content;
     max-width: 900px;
@@ -16,36 +16,28 @@
     overflow: auto /* Nasconde il contenuto che esce dal contenitore */
 }
 
-* {
-    font-family: 'Roboto', sans-serif !important /* Utilizza il font Roboto per tutti gli elementi */
+button, input, select, textarea {
+    font-family: inherit;
 }
 
-button.reset-btn {
-    background-color: #0461c5; /* Colore viola */
-    color: white;
+.reset-btn {
     padding: 10px 20px; /* Padding ridotto */
-    border-radius: 8px; /* Bordi arrotondati */
-    border: none;
-    cursor: pointer;
     font-size: 14px; /* Dimensione del font ridotta */
-    transition: background-color 0.3s ease, transform 0.3s ease; /* Aggiungi transizione */
     margin-left: 10px; /* Spaziatura dal filtro */
 }
 
-button.reset-btn:hover {
+.reset-btn:hover {
     background-color: #023c7b; /* Colore più scuro al passaggio del mouse */
-    transform: scale(1.05); /* Effetto di ingrandimento */
 }
 
 .campaign-list-container:hover {
     box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.15); /* Ombra più forte al passaggio del mouse */
 }
 
-.campaign-list-container h2 {
+h2 {
     text-align: center;
     margin-bottom: 30px;
     color: #333333; /* Testo scuro per contrasto */
-    font-family: 'Arial', sans-serif;
     font-size: 2rem; /* Dimensione del font aumentata */
     font-weight: 600; /* Peso del font aumentato */
 }
@@ -56,10 +48,8 @@ button.reset-btn:hover {
 
 /* Contenitore per i filtri */
 .filters {
-    width: 100%;
     display: flex;
     gap: 15px;
-    flex-wrap: nowrap;
     justify-content: center; /* Centra gli elementi orizzontalmente */
     align-items: center; /* Allinea verticalmente al centro */
     margin-bottom: 20px; /* Spaziatura inferiore */
@@ -67,36 +57,32 @@ button.reset-btn:hover {
 
 /* Etichette dei filtri */
 .filters label {
-    font-weight: bold;
     color: #444444;
-    font-family: 'Arial', sans-serif;
     flex: 0 0 auto; /* Impedisce alle label di espandersi */
     text-align: right; /* Allinea il testo a destra */
     min-width: 80px; /* Larghezza minima per uniformità */
 }
 
 /* Selezioni dei filtri */
-.filters select {
+.filter-select {
     flex: 1 1 auto;
     min-width: 200px;
     padding: 10px;
     border: 1px solid #cccccc;
     border-radius: 5px;
     background-color: #ffffff;
-    font-family: 'Arial', sans-serif;
     box-sizing: border-box;
     font-size: 16px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.filters select:focus {
+.filter-select:focus {
     border-color: #0461c5; /* Blu per il focus */
     outline: none;
     box-shadow: 0px 0px 4px rgba(0, 123, 255, 0.6);
 }
 
 .campaigns {
-    width: 100%;
     margin-top: 20px;
     margin-bottom: 30px; /* Aggiungi margine inferiore */
     height: 60%;
@@ -104,78 +90,28 @@ button.reset-btn:hover {
     padding: 10px;
 }
 
-.campaign-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 20px; /* Padding aumentato */
-    border: 1px solid #d1d1d1;
-    border-radius: 12px; /* Bordi più arrotondati */
-    background-color: #ffffff; /* Sfondo bianco per contrasto */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Ombra più leggera */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Aggiungi transizione */
-}
-
-.campaign-card:hover {
-    transform: translateY(-5px); /* Effetto di sollevamento al passaggio del mouse */
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15); /* Ombra più forte */
-}
-
-/* Sezione dei dati della campagna (titolo e dettagli) */
-.campaign-info {
-    display: flex; /* Utilizza flexbox per allineare i dettagli orizzontalmente */
-    flex: 1; /* Si espande per occupare lo spazio disponibile */
-    justify-content: flex-start; /* Allinea gli elementi a sinistra */
-    align-items: center; /* Allinea verticalmente */
-    min-width: 60%; /* Impedisce che il contenitore dei dati diventi troppo stretto */
-}
-
-/* Dettagli della campagna (Paese e Stato) */
-.campaign-details {
-    font-size: 14px;
-    color: #555;
-    margin: 0;
-    padding: 0 10px;
-    display: flex;
-    gap: 20px; /* Aggiunge spazio tra le informazioni della campagna */
-}
-
-/* Sezione per le azioni (Modifica e Rimuovi) */
-.campaign-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
-
 .campaign-table {
     width: 100%;
-    border: #fdece8;
-    border-collapse: separate;
     border-spacing: 0;
     margin-top: 20px;
-    background-color: #fdece8;
 }
 
-.campaign-table th,
-.campaign-table td {
+th,
+td {
     padding: 10px;
     text-align: center;
 }
 
-.campaign-table th {
-    background-color: #fdece8;
+th {
     color: #333333;
-    font-weight: bold;
-    text-align: center;
 }
 
-.campaign-table td {
+td {
     color: #555555;
     vertical-align: middle;
 }
 
-.campaign-table td button {
+.campaign-table button {
     margin-right: 10px;
     padding: 5px 10px;
     font-size: 14px;
@@ -189,7 +125,6 @@ button {
     background-color: #0461c5; /* Colore viola */
     color: white;
     border: none;
-    width: auto; /* Larghezza automatica */
     transition: background-color 0.3s ease, transform 0.3s ease; /* Aggiungi transizione */
 }
 
@@ -198,25 +133,21 @@ button:hover {
     transform: scale(1.05); /* Effetto di ingrandimento */
 }
 
-button.remove-btn {
+.remove-btn {
     background-color: #fe3737; /* Colore rosso */
 }
 
-button.remove-btn:hover {
+.remove-btn:hover {
     background-color: #d72f2f; /* Colore più scuro al passaggio del mouse */
 }
 
-button.create-campaign-btn {
-    background-color: #0461c5; /* Colore verde */
+.create-campaign-btn {
     padding: 15px 30px; /* Padding aumentato */
     font-size: 18px; /* Dimensione del font aumentata */
-    border-radius: 8px; /* Bordi più arrotondati */
-    transition: background-color 0.3s ease, transform 0.3s ease; /* Aggiungi transizione */
 }
 
-button.create-campaign-btn:hover {
+.create-campaign-btn:hover {
     background-color: #044386; /* Colore più scuro al passaggio del mouse */
-    transform: scale(1.05); /* Effetto di ingrandimento */
 }
 /* Pulsante di creazione campagna */
 .create-campaign-container {
@@ -243,8 +174,7 @@ button.create-campaign-btn:hover {
     flex-direction: column;
     width: 90%;
     max-width: 600px;
-    margin: 0 auto;
-    height: auto;
+    position: relative;
     padding: 30px; /* Padding aumentato */
     box-sizing: border-box;
     overflow-y: scroll;
@@ -301,21 +231,12 @@ input:focus, select:focus, textarea:focus {
 .campo-target-fondi, .campo-fondi-attuali, .campo-donazione,
 .campo-scadenza, .campo-immagine {
     margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
 }
 
 
 textarea {
     resize: vertical;
     min-height: 100px;
-}
-
-input[type="file"] {
-    border: none;
-    font-size: 0.9rem;
-    margin-top: 5px;
-    color: var(--text-secondary);
 }
 
 img{
@@ -359,14 +280,13 @@ img{
         display: block;
     }
 
-    .campaign-table th,
-    .campaign-table td {
+    th,
+    td {
         padding: 5px;
         font-size: 12px;
     }
 
     .campaign-list-container {
-        width: 90%; /* Utilizza il 90% della larghezza disponibile */
         padding: 15px; /* Riduce il padding */
     }
 
@@ -382,60 +302,21 @@ img{
         font-size: 14px; /* Riduce la dimensione del font delle etichette */
     }
 
-    .filters select {
+    .filter-select {
         font-size: 14px; /* Riduce la dimensione del font del dropdown */
         width: 100%; /* Allarga i select al 100% della larghezza */
-    }
-
-    .campaign-title {
-        font-size: 16px; /* Riduce la dimensione del titolo per dispositivi piccoli */
-    }
-
-    .campaign-details {
-        font-size: 14px; /* Riduce la dimensione del testo per i dettagli */
-    }
-
-    .campaign-actions {
-        flex-direction: column; /* Metti i pulsanti in colonna */
     }
 
     button {
         font-size: 14px; /* Riduce la dimensione del font del bottone */
     }
 
-    button.create-campaign-btn, button.remove-btn {
-        width: auto; /* Adatta la larghezza dei pulsanti */
-    }
 }
 
 /* Per tablet (dai 600px ai 900px) */
 @media (max-width: 900px) {
-    .campaign-list-container {
-        width: 90%; /* Utilizza il 90% della larghezza disponibile */
-    }
-
     h2 {
         font-size: 20px; /* Aumenta leggermente la dimensione del font per tablet */
-    }
-
-    .filters label {
-        font-size: 16px;
-    }
-
-    .filters select {
-        font-size: 16px;
-    }
-
-    .campaign-title {
-        font-size: 18px;
-    }
-
-    .campaign-details {
-        font-size: 16px;
-    }
-
-    .campaign-actions {
-        gap: 15px;
     }
 
     button {
@@ -447,8 +328,6 @@ img{
 @media (min-width: 901px) {
 
     .campaign-list-container {
-        width: 90%; /* Utilizza il 90% della larghezza disponibile */
-        
         padding: 20px;
     }
 
@@ -460,36 +339,12 @@ img{
         font-size: 22px; /* Maggiore dimensione per desktop */
     }
 
-    .campaign-title {
-        font-size: 20px;
-    }
-
-    .campaign-details {
-        font-size: 18px;
-    }
-
-    .campaign-actions {
-        gap: 20px;
-    }
-
-    button {
-        font-size: 16px;
-    }
 }
 
-/* Pulsante Indietro piccolo */
-.container-modifica {
-    position: relative; /* Imposta il contesto di posizionamento */
-  }
-  .create-campaign-container {
-    position: relative; /* Imposta il contesto di posizionamento */
-  }
-button.back-btn {
+.back-btn {
     font-size: 12px; /* Riduce la dimensione del font */
     padding: 5px 10px; /* Riduce il padding per rendere il pulsante più piccolo */
-    width: auto; /* Impedisce che il bottone prenda la larghezza intera */
     background-color: #fe3737; /* Imposta un colore di sfondo chiaro */
-    color: #ffffff; /* Colore del testo */
     border: 1px solid #f45a5a; /* Colore del bordo */
     border-radius: 5px; /* Angoli arrotondati */
     position: absolute; /* Posizionamento assoluto */
@@ -497,6 +352,6 @@ button.back-btn {
     left: 10px; /* Posiziona il pulsante a sinistra */
 }
 
-button.back-btn:hover {
+.back-btn:hover {
     background-color: #b72b2b; /* Cambia il colore di sfondo quando il mouse passa sopra */
 }
