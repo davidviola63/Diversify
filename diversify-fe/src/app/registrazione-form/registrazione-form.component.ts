@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Observable, of } from 'rxjs'; // Aggiunto per mockare la verifica del database
@@ -8,7 +8,7 @@ import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-registrazione-form',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './registrazione-form.component.html',
   styleUrls: ['./registrazione-form.component.css']
 })
@@ -142,12 +142,6 @@ export class RegistrazioneFormComponent {
     } else if (field === 'confermaPassword') {
       this.isConfermaPasswordVisible = !this.isConfermaPasswordVisible;
     }
-  }
-
-    // Funzione per navigare alla pagina di registrazione
-    navigateToLogin(): void {
-      this.router.navigate(['/loggato']);
-    }
-  
+  }  
     
 } 
