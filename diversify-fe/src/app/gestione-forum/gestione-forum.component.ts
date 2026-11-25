@@ -15,7 +15,6 @@ export class GestioneForumComponent implements OnInit {
   forums: any[] = [];
   editingForumId: string | null = null;
   ruolo: boolean = true; // Supponiamo che l'utente sia amministratore, puoi modificarlo dinamicamente
-  newForum = { titolo: '', descrizione: '', paese: '' };
 
   countries = [
     'Austria', 'Belgio', 'Bulgaria', 'Cipro', 'Croazia', 'Danimarca',
@@ -48,24 +47,6 @@ export class GestioneForumComponent implements OnInit {
     });
   }
 
-  createForum(): void {
-    if (this.newForum.titolo && this.newForum.descrizione && this.newForum.paese) {
-      this.forumService.createForum(this.newForum).subscribe(
-        (response) => {
-          console.log('Forum creato:', response);  // Verifica la risposta
-          alert('Forum creato con successo!');
-          this.newForum = { titolo: '', descrizione: '', paese: '' }; // Reset dei dati
-        },
-        (error) => {
-          console.error('Errore nella creazione del forum:', error);
-          alert('Errore nella creazione del forum!');
-        }
-      );
-    } else {
-      alert('Compila tutti i campi!');
-    }
-  }
-  
   onSubmit(): void {
     if (this.forumForm.valid) {
       const forum = this.forumForm.value;

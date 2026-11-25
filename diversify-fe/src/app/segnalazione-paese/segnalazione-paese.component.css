@@ -102,42 +102,6 @@ li:hover {
 }
 
 /* Stile per la tendina dei risultati */
-.search-dropdown {
-    position: absolute;
-    top: 110%;
-    left: 0;
-    width: 100%;
-    max-height: 250px;
-    overflow-y: auto;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    opacity: 0.9;
-    z-index: 999;
-    box-sizing: border-box;
-}
-
-/* Aggiunta bordo attivo alla tendina */
-.search-dropdown.active {
-    border-color: #ff8a65;
-}
-
-/* Stile per gli item della tendina */
-.search-item {
-    padding: 12px 20px;
-    font-size: 16px;
-    font-family: 'Roboto', sans-serif;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-/* Hover sugli item della tendina */
-.search-item:hover {
-    background-color: #fffae6;
-    color: #ff8a65;
-    transform: scale(1.03);
-}
 /* Imposta il font di tutta la pagina su Roboto */
 * {
     font-family: 'Roboto', sans-serif;
@@ -146,44 +110,12 @@ li:hover {
     box-sizing: border-box;
 }
 
-/* Corpo della pagina */
-body {
-    background-color: #f8f8f8; /* Colore di sfondo neutro */
-    color: #333; /* Colore del testo scuro per leggibilità */
-    font-size: 16px;
-    line-height: 1.6;
-    padding: 30px;
-}
-
-/* Contenitore principale */
-.container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Ombra morbida per il contenitore */
-    border-radius: 12px;
-}
-
 /* Testo titoli e sottotitoli */
-h1, h2, h3 {
+h3 {
     color: #642102; /* Colore scuro per i titoli */
     margin-bottom: 15px;
     margin-top: 20px;
     font-weight: 700;
-}
-
-h1 {
-    font-size: 36px;
-    margin-top: 0;
-}
-
-h2 {
-    font-size: 28px;
-}
-
-h3 {
     font-size: 20px;
 }
 
@@ -195,84 +127,6 @@ h3 {
     overflow: visible; /* Assicurati che gli elementi siano visibili */
 }
 
-
-.search-input {
-    width: 100%;
-    max-width: 450px;
-    padding: 15px 25px;
-    font-size: 18px;
-    border-radius: 40px;
-    border: 2px solid #ff7a60;
-    background: linear-gradient(to right, #ffede1, #ffb6b9);
-    color: #642102;
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-    outline: none;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-/* Barra di ricerca in focus */
-.search-input:focus {
-    border-color: #ff8a65;
-    background: linear-gradient(to right, #fffae6, #ffb6b9);
-    box-shadow: 0 12px 30px rgba(255, 138, 101, 0.3);
-    color: #642102;
-    transform: scale(1.02);
-}
-
-.dropdown-menu {
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ccc;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-  }
-
-/* Lista dei risultati */
-ul.search-dropdown {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    position: absolute;
-    top: 110%;
-    left: 0;
-    width: 100%;
-    max-height: 250px;
-    overflow-y: auto;
-    background-color: #fff;
-    border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    opacity: 0.95;
-    z-index: 999;
-    box-sizing: border-box;
-
-}
-
-/* Aggiunta di un bordo attivo alla tendina */
-ul.active {
-    border-color: #ff8a65;
-}
-
-/* Elementi della lista */
-li.search-item {
-    padding: 15px 20px;
-    font-size: 16px;
-    color: #642102;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-bottom: 1px solid #f0f0f0;
-    background-color: #fffbf6;
-    border-radius: 10px;
-}
-
-/* Hover sugli item della lista */
-li.search-item:hover {
-    background-color: #ff7a60;
-    color: #fff;
-    transform: scale(1.03);
-    transition: all 0.3s ease;
-}
 
 /* Bottoni generali */
 button {
@@ -291,71 +145,6 @@ button {
 button:hover {
     background-color: #004288;
     transform: scale(1.05);
-}
-
-/* Sezione del contenuto */
-.section {
-    margin-top: 40px;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-/* Aggiungi ombre eleganti alle card o contenitori */
-.card {
-    background-color: #fff;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-}
-
-.card:hover {
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
-}
-
-/* Tabelle e dati */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th, td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-th {
-    background-color: #ff7a60;
-    color: #fff;
-}
-
-td {
-    background-color: #fff;
-}
-
-/* Footer */
-footer {
-    margin-top: 50px;
-    text-align: center;
-    padding: 20px;
-    background-color: #642102;
-    color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-}
-
-footer a {
-    color: #ff7a60;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-footer a:hover {
-    text-decoration: underline;
 }
 
 /* Contenitore dello sfondo per il pop-up */
@@ -447,46 +236,8 @@ footer a:hover {
     transition: all 0.3s ease;
 }
 
-/* Stile per il tasto "Salva modifiche" */
-.save-button {
-    font-family: 'Roboto', sans-serif;
-    font-size: 18px;
-    font-weight: 600; /* Un peso leggermente più forte per il testo */
-    padding: 12px 30px; /* Spaziatura interna per farlo sembrare più grande */
-    background-color: #0461c5; /* Colore caldo arancio */
-    color: #fff; /* Colore del testo bianco */
-    border: none; /* Rimuove il bordo */
-    border-radius: 30px; /* Bordo arrotondato */
-    cursor: pointer; /* Cambia il cursore al passaggio del mouse */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Ombra morbida per dare profondità */
-    transition: all 0.3s ease;
-}
-
-/* Effetto hover per il pulsante */
-.save-button:hover {
-    background-color: #034183; /* Colore più chiaro al passaggio del mouse */
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); /* Ombra più intensa al passaggio del mouse */
-    transform: translateY(-2px); /* Leggero spostamento verso l'alto */
-}
-
-/* Effetto click (quando il pulsante viene premuto) */
-.save-button:active {
-    transform: translateY(1px); /* Ritorna al basso per simulare la pressione */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Ombra più piccola */
-}
-
-
-
 /* Media Queries per schermi piccoli */
 @media (max-width: 768px) {
-    .search-input {
-        max-width: 100%;
-    }
-
-    .container {
-        padding: 15px;
-    }
-    
     button {
         width: 100%;
     }

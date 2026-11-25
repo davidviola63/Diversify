@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; // Importa CommonModule
 import { RouterModule } from '@angular/router';
@@ -20,7 +19,7 @@ export class ForumComponent {
   countryName: string = 'Italia';
   autori: { [id: string]: string } = {};
  
-  constructor(private route: ActivatedRoute,private http: HttpClient, private router: Router,private forumService: ForumService, private userService: UserService) {}
+  constructor(private route: ActivatedRoute, private router: Router,private forumService: ForumService, private userService: UserService) {}
  
   ngOnInit(): void {
     // Recupera query parameters (country e forumId)

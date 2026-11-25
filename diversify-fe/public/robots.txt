@@ -1,0 +1,8 @@
+User-agent: *
+
+Disallow: /loggato
+Disallow: /registrato
+Disallow: /recupero-password
+Disallow: /scheda-area-personale
+Disallow: /pagina-profilo-amministratore
+Disallow: /generale-amministratore

@@ -39,11 +39,6 @@ export class DocumentoInformativoComponent {
     });
   }
 
-  onDocumentChange(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    this.selectedDocument = selectElement.value;
-  }
-
   onTextChange(event: Event): void {
     const selectedDoc = this.docs.find((doc) => doc.idDocumentoInformativo === this.selectedValue);
     this.videoContainer.nativeElement.innerHTML = '';

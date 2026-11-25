@@ -126,7 +126,7 @@ button {
   padding: 10px;
   border: none;
   border-radius: 5px;
-  background-color: #007bff;
+  background-color: #0056b3; /* era #007bff: contrasto 3,98 → 7,04 */
   color: white;
   font-size: 16px;
   font-family: 'Roboto', sans-serif;
@@ -136,7 +136,7 @@ button {
 
 /* Effetto hover per il bottone */
 button:hover {
-    background-color: #0056b3; /* Blu più scuro */
+  background-color: #013872; /* era #0056b3: contrasto 11,6 */
 }
 
 /* Bottone disabilitato */
