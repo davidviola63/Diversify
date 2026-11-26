@@ -3,6 +3,7 @@ package it.unisa.diversifybe.Utilities;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
+
 import java.security.Key;
 import java.util.Date;
 
@@ -24,13 +25,11 @@ import java.util.Date;
  *
  * <p><b>Dipendenze:</b> Questa classe utilizza la libreria <i>jjwt</i> per la gestione dei token.</p>
  */
-
 @Component
 public class JwtUtils {
 
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final long expirationTime = 36000000;
-
 
     /**
      * Genera un token JWT con un soggetto specifico e un tempo di scadenza predefinito.
@@ -38,7 +37,7 @@ public class JwtUtils {
      * @param username Il nome utente o identificatore da includere come soggetto del token.
      * @return Una stringa contenente il token JWT generato.
      */
-    public String generateToken(String username) {
+    public String generateToken(final String username) {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
@@ -57,7 +56,7 @@ public class JwtUtils {
      * @return Il soggetto (ad esempio, il nome utente) se il token è valido;
      *         {@code null} in caso contrario.
      */
-    public String validateToken(String token) {
+    public String validateToken(final String token) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -65,7 +64,7 @@ public class JwtUtils {
                     .parseClaimsJws(token)
                     .getBody()
                     .getSubject();
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (final JwtException | IllegalArgumentException e) {
             // Gestione dell'errore di validazione (es. log, eccezioni personalizzate)
             return null;
         }

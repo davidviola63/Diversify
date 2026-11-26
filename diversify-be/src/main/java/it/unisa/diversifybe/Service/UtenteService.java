@@ -18,15 +18,17 @@ import java.util.Optional;
  * l'autenticazione e l'hashing delle password.
  * Utilizza {@link UtenteRepository} per l'accesso ai dati degli utenti e {@link JwtUtils} per la generazione dei token JWT.
  */
-
 @Service
 public class UtenteService {
 
-    @Autowired
-    private UtenteRepository utenteRepository;
+    private final UtenteRepository utenteRepository;
+    private final JwtUtils jwtUtils; // Utils per la generazione del JWT
 
     @Autowired
-    private JwtUtils jwtUtils; // Utils per la generazione del JWT
+    public UtenteService(final UtenteRepository utenteRepository, final JwtUtils jwtUtils) {
+        this.utenteRepository = utenteRepository;
+        this.jwtUtils = jwtUtils;
+    }
 
     /**
      * Registra un nuovo utente nel sistema.
@@ -39,40 +41,11 @@ public class UtenteService {
      * @return un messaggio di successo o errore.
      * @throws NoSuchAlgorithmException se si verifica un errore nell'hashing della password.
      */
+    public String registerUser(final RegisterRequest registerRequest) throws NoSuchAlgorithmException {
+        final String validationError = validateRegistrationFields(registerRequest);
 
-    public String registerUser(RegisterRequest registerRequest) throws NoSuchAlgorithmException {
-        // Controllo che i campi obbligatori non siano nulli o vuoti
-
-        if (registerRequest.getName() == null || registerRequest.getName().trim().isEmpty()) {
-            return "Il campo nome è obbligatorio";
-        }
-
-        if (registerRequest.getLastName() == null || registerRequest.getLastName().trim().isEmpty()) {
-            return "Il campo cognome è obbligatorio";
-        }
-
-        if (registerRequest.getUsername() == null || registerRequest.getUsername().trim().isEmpty()) {
-            return "Il campo username è obbligatorio.";
-        }
-
-        if (registerRequest.getEmail() == null || registerRequest.getEmail().trim().isEmpty()) {
-            return "Il campo email è obbligatorio.";
-        }
-
-        if (registerRequest.getPassword() == null || registerRequest.getPassword().trim().isEmpty()) {
-            return "Il campo password è obbligatorio.";
-        }
-
-        if (registerRequest.getCodiceFiscale() == null || !isValidCodiceFiscale(registerRequest.getCodiceFiscale())) {
-            return "Codice fiscale non valido.";
-        }
-
-        if (registerRequest.getDomanda() == null || registerRequest.getDomanda().trim().isEmpty()) {
-            return "Domanda non valida.";
-        }
-
-        if (registerRequest.getRisposta() == null || registerRequest.getRisposta().trim().isEmpty()) {
-            return "Risposta non valida.";
+        if (validationError != null) {
+            return validationError;
         }
 
         // Validazione email
@@ -86,27 +59,30 @@ public class UtenteService {
         }
 
         // Verifica che l'username non sia già in uso
-        Optional<Utente> existingUserByUsername = utenteRepository.findByUsername(registerRequest.getUsername());
+        final Optional<Utente> existingUserByUsername = utenteRepository.findByUsername(registerRequest.getUsername());
+
         if (existingUserByUsername.isPresent()) {
             return "Username già in uso!";
         }
 
         // Verifica che l'email non sia già in uso
-        Optional<Utente> existingUserByEmail = utenteRepository.findByEmail(registerRequest.getEmail());
+        final Optional<Utente> existingUserByEmail = utenteRepository.findByEmail(registerRequest.getEmail());
+
         if (existingUserByEmail.isPresent()) {
             return "Email già in uso!";
         }
 
-        Optional<Utente> existingUserByCodiceFiscale = utenteRepository.findByCodiceFiscale(registerRequest.getCodiceFiscale());
+        final Optional<Utente> existingUserByCodiceFiscale = utenteRepository.findByCodiceFiscale(registerRequest.getCodiceFiscale());
+
         if (existingUserByCodiceFiscale.isPresent()) {
             return "Codice fiscale già in uso!";
         }
 
         // Hash della password utilizzando il metodo esistente
-        String hashedPassword = hashPassword(registerRequest.getPassword());
+        final String hashedPassword = hashPassword(registerRequest.getPassword());
 
         // Creazione del nuovo utente
-        Utente utente = new Utente();
+        final Utente utente = new Utente();
         utente.setNome(registerRequest.getName().trim());
         utente.setCognome(registerRequest.getLastName().trim());
         utente.setUsername(registerRequest.getUsername().trim());
@@ -122,28 +98,76 @@ public class UtenteService {
         return "Utente registrato con successo!";
     }
 
+    /**
+     * Verifica la validità dei campi obbligatori per la registrazione.
+     *
+     * @param registerRequest i dati forniti per la registrazione.
+     * @return il messaggio di errore se un campo non è valido, altrimenti null.
+     */
+    private String validateRegistrationFields(final RegisterRequest registerRequest) {
+        if (isNullOrEmpty(registerRequest.getName())) {
+            return "Il campo nome è obbligatorio";
+        }
+
+        if (isNullOrEmpty(registerRequest.getLastName())) {
+            return "Il campo cognome è obbligatorio";
+        }
+
+        if (isNullOrEmpty(registerRequest.getUsername())) {
+            return "Il campo username è obbligatorio.";
+        }
+
+        if (isNullOrEmpty(registerRequest.getEmail())) {
+            return "Il campo email è obbligatorio.";
+        }
+
+        if (isNullOrEmpty(registerRequest.getPassword())) {
+            return "Il campo password è obbligatorio.";
+        }
+
+        if (registerRequest.getCodiceFiscale() == null ||
+                !isValidCodiceFiscale(registerRequest.getCodiceFiscale())) {
+            return "Codice fiscale non valido.";
+        }
+
+        if (isNullOrEmpty(registerRequest.getDomanda())) {
+            return "Domanda non valida.";
+        }
+
+        if (isNullOrEmpty(registerRequest.getRisposta())) {
+            return "Risposta non valida.";
+        }
+
+        return null;
+    }
+
+    private boolean isNullOrEmpty(final String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
     // Metodo per validare il codice fiscale
-    private boolean isValidCodiceFiscale(String codiceFiscale) {
-        String codiceFiscaleRegex = "^[A-Z0-9]{16}$";
+    private boolean isValidCodiceFiscale(final String codiceFiscale) {
+        final String codiceFiscaleRegex = "^[A-Z0-9]{16}$";
         return codiceFiscale != null && codiceFiscale.matches(codiceFiscaleRegex);
     }
 
     // Metodo per validare l'email
-    private boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    private boolean isValidEmail(final String email) {
+        final String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         return email != null && email.matches(emailRegex);
     }
 
     // Metodo per validare la password
-    private boolean isValidPassword(String password) {
+    private boolean isValidPassword(final String password) {
         if (password == null || password.length() < 8) {
             return false;
         }
+
         boolean hasUppercase = false;
         boolean hasLowercase = false;
         boolean hasDigit = false;
 
-        for (char c : password.toCharArray()) {
+        for (final char c : password.toCharArray()) {
             if (Character.isUpperCase(c)) hasUppercase = true;
             if (Character.isLowerCase(c)) hasLowercase = true;
             if (Character.isDigit(c)) hasDigit = true;
@@ -163,28 +187,28 @@ public class UtenteService {
      * @return un oggetto {@link JwtResponse} contenente il token JWT, o {@code null} se le credenziali sono errate.
      * @throws NoSuchAlgorithmException se si verifica un errore nell'hashing della password.
      */
-
-    public JwtResponse authenticateUser(LoginRequest loginRequest) throws NoSuchAlgorithmException {
+    public JwtResponse authenticateUser(final LoginRequest loginRequest) throws NoSuchAlgorithmException {
         // Controlla che username e password non siano nulli o vuoti
         if (loginRequest.getEmail() == null || loginRequest.getEmail().isEmpty() ||
                 loginRequest.getPassword() == null || loginRequest.getPassword().isEmpty()) {
             return null; // Manca username o password
         }
 
-        Optional<Utente> utenteOptional = utenteRepository.findByEmail(loginRequest.getEmail());
+        final Optional<Utente> utenteOptional = utenteRepository.findByEmail(loginRequest.getEmail());
 
         if (utenteOptional.isEmpty()) {
             return null; // L'utente non esiste
         }
 
-        Utente utente = utenteOptional.get();
+        final Utente utente = utenteOptional.get();
 
         // Controlla se la password hashata corrisponde
         if (!utente.getPasswordHash().equals(hashPassword(loginRequest.getPassword()))) {
             return null; // Credenziali non valide
         }
 
-        String jwt = jwtUtils.generateToken(utente.getUsername());
+        final String jwt = jwtUtils.generateToken(utente.getUsername());
+
         return new JwtResponse(jwt);
     }
 
@@ -198,14 +222,15 @@ public class UtenteService {
      * @return la password hashata in formato esadecimale.
      * @throws NoSuchAlgorithmException se l'algoritmo SHA-256 non è disponibile.
      */
+    public String hashPassword(final String password) throws NoSuchAlgorithmException {
+        final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        final byte[] encodedhash = digest.digest(password.getBytes());
+        final StringBuilder hexString = new StringBuilder(encodedhash.length * 2);
 
-    public String hashPassword(String password) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] encodedhash = digest.digest(password.getBytes());
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : encodedhash) {
+        for (final byte b : encodedhash) {
             hexString.append(String.format("%02x", b));
         }
+
         return hexString.toString();
     }
 
@@ -215,13 +240,13 @@ public class UtenteService {
      * @param username il nome utente dell'utente da cercare
      * @return un {@link Optional} contenente l'utente se trovato, altrimenti un {@link Optional#empty()}
      */
-    public Optional<Utente> findByUsername(String username) {
+    public Optional<Utente> findByUsername(final String username) {
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty");
         }
+
         return utenteRepository.findByUsername(username);
     }
-
 
     /**
      * Recupera un utente dal database utilizzando l'email e il codice fiscale forniti.
@@ -236,21 +261,20 @@ public class UtenteService {
      * @return un oggetto {@link Optional} contenente l'utente corrispondente,
      * oppure {@code Optional.empty()} se nessun utente è stato trovato.
      */
-
-    public Optional<Utente> findByEmailAndCodiceFiscale(String email, String codiceFiscale) {
+    public Optional<Utente> findByEmailAndCodiceFiscale(final String email, final String codiceFiscale) {
         if (email == null || email.trim().isEmpty() || codiceFiscale == null || codiceFiscale.trim().isEmpty()) {
             throw new IllegalArgumentException("Email and codice fiscale cannot be null or empty");
         }
+
         return utenteRepository.findByEmailAndCodiceFiscale(email, codiceFiscale);
     }
-
 
     /**
      * Salva un utente nel database.
      *
      * @param utente l'entità utente da salvare.
      */
-    public void save(Utente utente) {
+    public void save(final Utente utente) {
         utenteRepository.save(utente);
     }
 
@@ -261,9 +285,9 @@ public class UtenteService {
      * @return un oggetto {@link Optional} contenente l'utente corrispondente,
      * oppure {@code Optional.empty()} se il token non è valido o l'utente non è trovato.
      */
-    public Optional<Utente> getUserFromToken(String token) {
+    public Optional<Utente> getUserFromToken(final String token) {
         // Decodifica e valida il token per ottenere il nome utente
-        String username = jwtUtils.validateToken(token);
+        final String username = jwtUtils.validateToken(token);
 
         if (username == null) {
             // Il token non è valido
@@ -291,29 +315,30 @@ public class UtenteService {
      *     <li>"Errore durante l'eliminazione dell'account." in caso di errore generico durante l'operazione.</li>
      * </ul>
      */
-    public String deleteUser(String token, String password) {
+    public String deleteUser(final String token, final String password) {
         try {
-            String username = jwtUtils.validateToken(token); // Ottieni il nome utente dal token
+            final String username = jwtUtils.validateToken(token); // Ottieni il nome utente dal token
+
             if (username == null) {
                 return "Token non valido.";
             }
 
-            Optional<Utente> utenteOptional = utenteRepository.findByUsername(username);
+            final Optional<Utente> utenteOptional = utenteRepository.findByUsername(username);
+
             if (utenteOptional.isEmpty()) {
                 return "Utente non trovato.";
             }
 
-            Utente utente = utenteOptional.get();
-
-            String hashedPassword = hashPassword(password);
+            final Utente utente = utenteOptional.get();
+            final String hashedPassword = hashPassword(password);
 
             if (hashedPassword.equals(utente.getPasswordHash())) {
                 utenteRepository.delete(utente);
                 return "Account eliminato con successo.";
             }
-            return "Password errata";
 
-        } catch (Exception e) {
+            return "Password errata";
+        } catch (final Exception e) {
             return "Errore durante l'eliminazione dell'account.";
         }
     }
@@ -324,11 +349,13 @@ public class UtenteService {
      * @param username L'username dell'utente.
      * @return L'ID dell'utente.
      */
-    public String getIdByUsername(String username) {
-        Optional<Utente> utente = utenteRepository.findByUsername(username);
+    public String getIdByUsername(final String username) {
+        final Optional<Utente> utente = utenteRepository.findByUsername(username);
+
         if (utente.isEmpty()) {
             return "Utente non trovato.";
         }
+
         return utente.get().getIdUtente();
     }
 
@@ -342,8 +369,8 @@ public class UtenteService {
      * @param email L'indirizzo email dell'utente da cercare.
      * @return L'oggetto {@link Utente} associato all'indirizzo email fornito.
      */
-    public Utente getUserByEmail(String email) {
-        Optional<Utente> utenteOptional = utenteRepository.findByEmail(email);
+    public Utente getUserByEmail(final String email) {
+        final Optional<Utente> utenteOptional = utenteRepository.findByEmail(email);
         return utenteOptional.get();
     }
 
@@ -353,10 +380,10 @@ public class UtenteService {
      * @param id l'ID dell'utente da cercare.
      * @return un {@link Optional} contenente l'utente se trovato, altrimenti vuoto.
      */
-    public Optional<Utente> findById(String id) {
+    public Optional<Utente> findById(final String id) {
         try {
             return utenteRepository.findById(id);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             return Optional.empty();
         }
     }

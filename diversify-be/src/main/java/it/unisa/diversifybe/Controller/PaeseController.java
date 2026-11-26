@@ -49,15 +49,16 @@ public class PaeseController {
      * @throws IllegalArgumentException se l'ID è nullo o vuoto.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Paese> getPaeseById(@PathVariable String id) {
+    public ResponseEntity<Paese> getPaeseById(@PathVariable final String id) {
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("L'ID fornito non può essere nullo o vuoto.");
         }
-        Optional<Paese> paese = paeseService.getPaeseById(id);
+
+        final Optional<Paese> paese = paeseService.getPaeseById(id);
+
         return paese.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
 
     /**
      * Crea un nuovo Paese.
@@ -67,7 +68,7 @@ public class PaeseController {
      * @return il Paese creato.
      */
     @PostMapping("/addPaese")
-    public Paese createPaese(@RequestBody Paese paese) {
+    public Paese createPaese(@RequestBody final Paese paese) {
         return paeseService.createPaese(paese);
     }
 
@@ -82,15 +83,17 @@ public class PaeseController {
      * @throws IllegalArgumentException se l'ID è nullo o vuoto.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Paese> updatePaese(@PathVariable String id, @RequestBody Paese updatedPaese) {
+    public ResponseEntity<Paese> updatePaese(@PathVariable final String id,
+                                             @RequestBody final Paese updatedPaese) {
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("L'ID del Paese non può essere nullo o vuoto.");
         }
-        Optional<Paese> paese = paeseService.updatePaese(id, updatedPaese);
+
+        final Optional<Paese> paese = paeseService.updatePaese(id, updatedPaese);
+
         return paese.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
 
     /**
      * Elimina un Paese esistente dato il suo ID.
@@ -102,10 +105,11 @@ public class PaeseController {
      * @throws IllegalArgumentException se l'ID è nullo o vuoto.
      */
     @PostMapping("/delete/{id}")
-    public ResponseEntity<Void> deletePaese(@PathVariable String id) {
+    public ResponseEntity<Void> deletePaese(@PathVariable final String id) {
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("L'ID fornito non può essere nullo o vuoto.");
         }
+
         paeseService.deletePaese(id);
         return ResponseEntity.noContent().build();
     }
@@ -117,9 +121,10 @@ public class PaeseController {
      * @return una lista di {@link Paese} associati.
      */
     @GetMapping("/campagna/{idCampagna}")
-    public List<Paese> findPaesiByCampagna(@PathVariable String idCampagna) {
+    public List<Paese> findPaesiByCampagna(@PathVariable final String idCampagna) {
         return paeseService.findPaesiByCampagna(idCampagna);
     }
+
     /**
      * Restituisce i paesi basati su un determinato benchmark.
      *
@@ -128,13 +133,13 @@ public class PaeseController {
      * @throws IllegalArgumentException se il benchmark è null o vuoto.
      */
     @GetMapping("/benchmark/{benchmark}")
-    public List<Paese> findPaesiByBenchmark(@PathVariable String benchmark) {
+    public List<Paese> findPaesiByBenchmark(@PathVariable final String benchmark) {
         if (benchmark == null || benchmark.trim().isEmpty()) {
             throw new IllegalArgumentException("Il benchmark fornito non può essere null o vuoto.");
         }
+
         return paeseService.findPaesiByBenchmark(benchmark);
     }
-
 
     /**
      * Restituisce i documenti informativi associati a un Paese.
@@ -144,14 +149,17 @@ public class PaeseController {
      * @throws IllegalArgumentException se l'ID del Paese è nullo o vuoto.
      */
     @GetMapping("/{idPaese}/documenti-informativi")
-    public ResponseEntity<?> getDocumentiInformativiByPaese(@PathVariable String idPaese) {
+    public ResponseEntity<?> getDocumentiInformativiByPaese(@PathVariable final String idPaese) {
         if (idPaese == null || idPaese.trim().isEmpty()) {
             throw new IllegalArgumentException("L'ID del Paese non può essere nullo o vuoto.");
         }
-        List<DocumentoInformativo> documentiInformativi = documentoInformativoService.findByIdPaese(idPaese);
+
+        final List<DocumentoInformativo> documentiInformativi = documentoInformativoService.findByIdPaese(idPaese);
+
         if (documentiInformativi.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
         return ResponseEntity.ok(documentiInformativi);
     }
 
@@ -173,17 +181,19 @@ public class PaeseController {
      * @throws IllegalArgumentException se {@code nomePaese} è nullo o vuoto,
      *                                  o se {@code benchmark} è nullo o vuoto.
      */
-
     @PutMapping("/{nomePaese}/benchmark")
-    public ResponseEntity<Paese> updateBenchmarkByName(@PathVariable String nomePaese, @RequestBody List<Benchmark> benchmark) {
+    public ResponseEntity<Paese> updateBenchmarkByName(@PathVariable final String nomePaese,
+                                                       @RequestBody final List<Benchmark> benchmark) {
         if (nomePaese == null || nomePaese.trim().isEmpty()) {
             throw new IllegalArgumentException("Il nome del Paese non può essere nullo o vuoto.");
         }
-        if (benchmark == null ||  benchmark.isEmpty()) {
+
+        if (benchmark == null || benchmark.isEmpty()) {
             throw new IllegalArgumentException("Il benchmark non può essere nullo o vuoto.");
         }
-        Paese updatedPaese = paeseService.updateBenchmarkByPaese(nomePaese, benchmark);
+
+        final Paese updatedPaese = paeseService.updateBenchmarkByPaese(nomePaese, benchmark);
+
         return ResponseEntity.ok(updatedPaese);
     }
-
 }

@@ -18,10 +18,14 @@ import java.util.Optional;
 @Service
 public class ForumService {
 
+    private final ForumRepository forumRepository;
+
     @Autowired
-    private ForumRepository forumRepository;
-    @Autowired
-    private UtenteRepository utenteRepository;
+    public ForumService(final ForumRepository forumRepository,
+                        final UtenteRepository utenteRepository) {
+        this.forumRepository = forumRepository;
+
+    }
 
     /**
      * Recupera tutti i forum.
@@ -38,7 +42,7 @@ public class ForumService {
      * @param idForum l'ID del forum da recuperare.
      * @return un oggetto Optional contenente il forum se trovato, altrimenti vuoto.
      */
-    public Optional<Forum> getForumById(String idForum) {
+    public Optional<Forum> getForumById(final String idForum) {
         return forumRepository.findById(idForum);
     }
 
@@ -50,13 +54,14 @@ public class ForumService {
      * @return il forum appena aggiunto.
      * @throws SecurityException se l'utente non è un amministratore.
      */
-    public Forum addForum(Forum forum, boolean ruolo) {
-        if (forum==null) {
+    public Forum addForum(final Forum forum, final boolean ruolo) {
+        if (forum == null) {
             throw new NullPointerException("Forum non può essere null.");
         }
         if (!ruolo) {
             throw new SecurityException("Solo gli amministratori possono aggiungere un forum.");
         }
+
         forum.setPost(new ArrayList<>());
         return forumRepository.save(forum);
     }
@@ -71,23 +76,21 @@ public class ForumService {
      * @throws SecurityException se l'utente non è un amministratore.
      * @throws IllegalArgumentException se il forum con l'ID specificato non esiste.
      */
-    public Forum updateForum(String idForum, Forum updatedForum, boolean ruolo) {
+    public Forum updateForum(final String idForum, final Forum updatedForum, final boolean ruolo) {
         if (!ruolo) {
             throw new SecurityException("Solo gli amministratori possono modificare un forum.");
         }
-
         if (idForum == null || idForum.isBlank()) {
             throw new IllegalArgumentException("Forum non trovato con ID: " + idForum);
         }
 
-        return forumRepository.findById(idForum).map(forum -> {
+        return forumRepository.findById(idForum).map((final Forum forum) -> {
             forum.setTitolo(updatedForum.getTitolo());
             forum.setDescrizione(updatedForum.getDescrizione());
             forum.setPost(updatedForum.getPost());
             return forumRepository.save(forum);
         }).orElseThrow(() -> new IllegalArgumentException("Forum non trovato con ID: " + idForum));
     }
-
 
     /**
      * Elimina un forum. Operazione riservata agli amministratori.
@@ -96,13 +99,14 @@ public class ForumService {
      * @param ruolo booleano che indica se l'utente è un amministratore.
      * @throws SecurityException se l'utente non è un amministratore.
      */
-    public void deleteForum(String idForum, boolean ruolo) {
+    public void deleteForum(final String idForum, final boolean ruolo) {
         if (idForum == null || idForum.isBlank()) {
             throw new IllegalArgumentException("Il parametro 'idForum' non può essere nullo o vuoto.");
         }
         if (!ruolo) {
             throw new SecurityException("Solo gli amministratori possono eliminare un forum.");
         }
+
         forumRepository.deleteById(idForum);
     }
 
@@ -113,12 +117,11 @@ public class ForumService {
      * @return una lista di {@link Forum} associati al paese specificato.
      * @throws IllegalArgumentException se il parametro {@code paese} è nullo o vuoto.
      */
-    public List<Forum> findForumsByPaese(String paese) {
+    public List<Forum> findForumsByPaese(final String paese) {
         if (paese == null || paese.isBlank()) {
             throw new IllegalArgumentException("Il parametro 'paese' non può essere nullo o vuoto.");
         }
 
-        return  forumRepository.findByPaese(paese);
+        return forumRepository.findByPaese(paese);
     }
-
 }

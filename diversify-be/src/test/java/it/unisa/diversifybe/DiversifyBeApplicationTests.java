@@ -8,6 +8,7 @@ class DiversifyBeApplicationTests {
 
     @Test
     void contextLoads() {
+        // Il metodo è intenzionalmente vuoto: il test verifica che il contesto
+        // applicativo Spring Boot venga caricato correttamente senza eccezioni.
     }
-
 }

@@ -13,7 +13,6 @@ import java.util.List;
  * Controller REST per la gestione delle campagne di crowdfunding.
  * Fornisce endpoint per la creazione, aggiornamento, eliminazione e ricerca delle campagne.
  */
-
 @RestController
 @RequestMapping("/api/campagne")
 @RequiredArgsConstructor
@@ -27,29 +26,28 @@ public class CampagnaCrowdFundingController {
      *
      * @return una lista di tutte le campagne disponibili.
      */
-
     @GetMapping
     public ResponseEntity<List<CampagnaCrowdFunding>> getAllCampagne() {
         return ResponseEntity.ok(service.getAllCampagne());
     }
-    @GetMapping("/by-paese/{paese}")
-    public ResponseEntity<List<CampagnaCrowdFunding>> getCampagneByPaese(@PathVariable String paese) {
-        List<CampagnaCrowdFunding> campagne = service.findCampagneByPaese(paese);
 
+    @GetMapping("/by-paese/{paese}")
+    public ResponseEntity<List<CampagnaCrowdFunding>> getCampagneByPaese(@PathVariable final String paese) {
+        final List<CampagnaCrowdFunding> campagne = service.findCampagneByPaese(paese);
         if (campagne.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(campagne);
     }
+
     /**
      * Restituisce una campagna specifica in base al suo ID.
      *
      * @param idCampagna l'ID della campagna.
      * @return la campagna corrispondente all'ID, oppure un errore 404 se non trovata.
      */
-
     @GetMapping("/{idCampagna}")
-    public ResponseEntity<CampagnaCrowdFunding> getCampagnaByIdCampagna(@PathVariable String idCampagna) {
+    public ResponseEntity<CampagnaCrowdFunding> getCampagnaByIdCampagna(@PathVariable final String idCampagna) {
         return service.getCampagnaByIdCampagna(idCampagna)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -61,9 +59,8 @@ public class CampagnaCrowdFundingController {
      * @param titolo il titolo della campagna.
      * @return una lista di campagne con il titolo specificato.
      */
-
     @GetMapping("/titolo")
-    public ResponseEntity<List<CampagnaCrowdFunding>> getCampagneByTitolo(@RequestParam String titolo) {
+    public ResponseEntity<List<CampagnaCrowdFunding>> getCampagneByTitolo(@RequestParam final String titolo) {
         return ResponseEntity.ok(service.getCampagneByTitolo(titolo));
     }
 
@@ -73,9 +70,8 @@ public class CampagnaCrowdFundingController {
      * @param keyword la parola chiave da cercare nel titolo.
      * @return una lista di campagne che contengono la parola chiave nel titolo.
      */
-
     @GetMapping("/titolo/containing")
-    public ResponseEntity<List<CampagnaCrowdFunding>> getCampagneByTitoloContaining(@RequestParam String keyword) {
+    public ResponseEntity<List<CampagnaCrowdFunding>> getCampagneByTitoloContaining(@RequestParam final String keyword) {
         return ResponseEntity.ok(service.getCampagneByTitoloContaining(keyword));
     }
 
@@ -85,9 +81,8 @@ public class CampagnaCrowdFundingController {
      * @param stato lo stato della campagna.
      * @return una lista di campagne con lo stato specificato.
      */
-
     @GetMapping("/stato")
-    public ResponseEntity<List<CampagnaCrowdFunding>> getCampagneByStato(@RequestParam String stato) {
+    public ResponseEntity<List<CampagnaCrowdFunding>> getCampagneByStato(@RequestParam final String stato) {
         return ResponseEntity.ok(service.getCampagneByStato(stato));
     }
 
@@ -97,10 +92,9 @@ public class CampagnaCrowdFundingController {
      * @param dataInizio la data di inizio in formato ISO (yyyy-MM-dd).
      * @return una lista di campagne con la data di inizio specificata.
      */
-
     @GetMapping("/data-inizio")
-    public ResponseEntity<List<CampagnaCrowdFunding>> getCampagneByDataInizio(@RequestParam String dataInizio) {
-        LocalDate date = LocalDate.parse(dataInizio);
+    public ResponseEntity<List<CampagnaCrowdFunding>> getCampagneByDataInizio(@RequestParam final String dataInizio) {
+        final LocalDate date = LocalDate.parse(dataInizio);
         return ResponseEntity.ok(service.getCampagneByDataInizio(date));
     }
 
@@ -110,10 +104,9 @@ public class CampagnaCrowdFundingController {
      * @param dataPrevistaFine la data di fine prevista in formato ISO (yyyy-MM-dd).
      * @return una lista di campagne con la data di fine prevista specificata.
      */
-
     @GetMapping("/data-prevista-fine")
-    public ResponseEntity<List<CampagnaCrowdFunding>> getCampagneByDataPrevistaFine(@RequestParam String dataPrevistaFine) {
-        LocalDate date = LocalDate.parse(dataPrevistaFine);
+    public ResponseEntity<List<CampagnaCrowdFunding>> getCampagneByDataPrevistaFine(@RequestParam final String dataPrevistaFine) {
+        final LocalDate date = LocalDate.parse(dataPrevistaFine);
         return ResponseEntity.ok(service.getCampagneByDataPrevistaFine(date));
     }
 
@@ -123,13 +116,12 @@ public class CampagnaCrowdFundingController {
      * @param campagna i dati della nuova campagna.
      * @return la campagna creata.
      */
-
     @PostMapping("/create")
-    public ResponseEntity<CampagnaCrowdFunding> createCampagna(@RequestBody CampagnaCrowdFunding campagna) {
+    public ResponseEntity<CampagnaCrowdFunding> createCampagna(@RequestBody final CampagnaCrowdFunding campagna) {
         try {
-            CampagnaCrowdFunding createdCampagna = service.createCampagna(campagna);
+            final CampagnaCrowdFunding createdCampagna = service.createCampagna(campagna);
             return ResponseEntity.ok(createdCampagna);
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             return ResponseEntity.status(403).build(); // Gestisce l'eccezione di sicurezza
         }
     }
@@ -139,13 +131,13 @@ public class CampagnaCrowdFundingController {
      *
      * @return la campagna aggiornata.
      */
-
     @PutMapping("update/{idCampagna}")
-    public ResponseEntity<CampagnaCrowdFunding> updateCampagna(@PathVariable String idCampagna, @RequestBody CampagnaCrowdFunding campagna) {
+    public ResponseEntity<CampagnaCrowdFunding> updateCampagna(@PathVariable final String idCampagna,
+                                                               @RequestBody final CampagnaCrowdFunding campagna) {
         try {
-            CampagnaCrowdFunding updatedCampagna = service.updateCampagna(idCampagna, campagna);
+            final CampagnaCrowdFunding updatedCampagna = service.updateCampagna(idCampagna, campagna);
             return ResponseEntity.ok(updatedCampagna);
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             return ResponseEntity.status(403).build(); // Gestisce l'eccezione di sicurezza
         }
     }
@@ -167,14 +159,12 @@ public class CampagnaCrowdFundingController {
      *         </ul>
      * @throws IllegalArgumentException se {@code idCampagna} è nullo o vuoto.
      */
-
-
     @PostMapping("/delete")
-    public ResponseEntity<Void> deleteCampagna(@RequestBody String idCampagna) {
+    public ResponseEntity<Void> deleteCampagna(@RequestBody final String idCampagna) {
         try {
             service.deleteCampagna(idCampagna);
             return ResponseEntity.noContent().build();
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             return ResponseEntity.status(403).build(); // Gestisce l'eccezione di sicurezza
         }
     }

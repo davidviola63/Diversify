@@ -34,7 +34,7 @@ public class SegnalazioneService {
      * @param id l'ID della segnalazione.
      * @return la segnalazione corrispondente, se esiste.
      */
-    public Optional<Segnalazione> getSegnalazioneById(String id) {
+    public Optional<Segnalazione> getSegnalazioneById(final String id) {
         return segnalazioneRepository.findById(id);
     }
 
@@ -44,7 +44,7 @@ public class SegnalazioneService {
      * @param segnalazione la segnalazione da creare.
      * @return la segnalazione creata.
      */
-    public Segnalazione createSegnalazione(Segnalazione segnalazione) {
+    public Segnalazione createSegnalazione(final Segnalazione segnalazione) {
         if (segnalazione.getIdSegnalazione() == null || segnalazione.getIdSegnalazione().isEmpty()) {
             segnalazione.setIdSegnalazione(UUID.randomUUID().toString());
         }
@@ -60,7 +60,7 @@ public class SegnalazioneService {
      * @param segnalazione la segnalazione da aggiornare.
      * @return la segnalazione aggiornata.
      */
-    public Segnalazione updateSegnalazione(Segnalazione segnalazione) {
+    public Segnalazione updateSegnalazione(final Segnalazione segnalazione) {
         return segnalazioneRepository.save(segnalazione);
     }
 
@@ -70,10 +70,10 @@ public class SegnalazioneService {
      * @param id l'ID della segnalazione da eliminare.
      * @param idUserToBan l'ID della persona da bannare.
      */
-    public void deleteSegnalazione(String id, String idUserToBan) {
+    public void deleteSegnalazione(final String id, final String idUserToBan) {
         segnalazioneRepository.deleteById(id);
-        Optional<Utente> utente = utenteRepository.findById(idUserToBan);
-        Utente update = utente.get();
+        final Optional<Utente> utente = utenteRepository.findById(idUserToBan);
+        final Utente update = utente.get();
         update.setBanned(true);
         utenteRepository.save(update);
     }
@@ -84,7 +84,7 @@ public class SegnalazioneService {
      * @param idSegnalante l'ID dell'utente che ha fatto le segnalazioni.
      * @return la lista di segnalazioni fatte dall'utente specificato.
      */
-    public List<Segnalazione> getSegnalazioniByIdSegnalante(String idSegnalante) {
+    public List<Segnalazione> getSegnalazioniByIdSegnalante(final String idSegnalante) {
         return segnalazioneRepository.findByIdSegnalante(idSegnalante);
     }
 }

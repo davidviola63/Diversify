@@ -52,9 +52,10 @@ public class SegnalazioneController {
      * @return la segnalazione con l'ID specificato, oppure una risposta HTTP 404 se non trovata.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Segnalazione> getSegnalazioneById(@PathVariable("id") String id) {
-        Optional<Segnalazione> segnalazione = segnalazioneService.getSegnalazioneById(id);
-        return segnalazione.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+    public ResponseEntity<Segnalazione> getSegnalazioneById(@PathVariable("id") final String id) {
+        final Optional<Segnalazione> segnalazione = segnalazioneService.getSegnalazioneById(id);
+        return segnalazione.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
     /**
@@ -65,11 +66,11 @@ public class SegnalazioneController {
      *         oppure una risposta HTTP 400 (BAD REQUEST) in caso di errore durante la creazione.
      */
     @PostMapping
-    public ResponseEntity<?> createSegnalazione(@RequestBody Segnalazione segnalazione) {
+    public ResponseEntity<?> createSegnalazione(@RequestBody final Segnalazione segnalazione) {
         try {
-            Segnalazione createdSegnalazione = segnalazioneService.createSegnalazione(segnalazione);
+            final Segnalazione createdSegnalazione = segnalazioneService.createSegnalazione(segnalazione);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdSegnalazione);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Errore durante la creazione della segnalazione");
         }
     }
@@ -83,11 +84,13 @@ public class SegnalazioneController {
      *         oppure una risposta HTTP 404 (NOT FOUND) se la segnalazione non esiste.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateSegnalazione(@PathVariable("id") String id, @RequestBody Segnalazione segnalazione) {
-        Optional<Segnalazione> existingSegnalazione = segnalazioneService.getSegnalazioneById(id);
+    public ResponseEntity<?> updateSegnalazione(@PathVariable("id") final String id,
+                                                @RequestBody final Segnalazione segnalazione) {
+        final Optional<Segnalazione> existingSegnalazione = segnalazioneService.getSegnalazioneById(id);
+
         if (existingSegnalazione.isPresent()) {
             segnalazione.setIdSegnalazione(id); // Impostiamo l'ID per l'aggiornamento
-            Segnalazione updatedSegnalazione = segnalazioneService.updateSegnalazione(segnalazione);
+            final Segnalazione updatedSegnalazione = segnalazioneService.updateSegnalazione(segnalazione);
             return ResponseEntity.ok(updatedSegnalazione);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Segnalazione non trovata");
@@ -98,12 +101,13 @@ public class SegnalazioneController {
      * Elimina una segnalazione specifica per ID.
      *
      * @param id l'ID della segnalazione da eliminare.
-     * @return una risposta HTTP 204 (NO CONTENT) se la segnalazione Ã¨ stata eliminata,
+     * @return una risposta HTTP 204 (NO CONTENT) se la segnalazione è stata eliminata,
      *         oppure una risposta HTTP 404 (NOT FOUND) se la segnalazione non esiste.
      */
     @PostMapping("/delete/{id}")
-    public ResponseEntity<?> deleteSegnalazione(@PathVariable("id") String id) {
-        Optional<Segnalazione> existingSegnalazione = segnalazioneService.getSegnalazioneById(id);
+    public ResponseEntity<?> deleteSegnalazione(@PathVariable("id") final String id) {
+        final Optional<Segnalazione> existingSegnalazione = segnalazioneService.getSegnalazioneById(id);
+
         if (existingSegnalazione.isPresent()) {
             segnalazioneService.deleteSegnalazione(id, existingSegnalazione.get().getIdSegnalato());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Segnalazione eliminata");
@@ -119,7 +123,7 @@ public class SegnalazioneController {
      * @return una lista di segnalazioni fatte dall'utente con l'ID specificato.
      */
     @GetMapping("/utente/{idSegnalante}")
-    public List<Segnalazione> getSegnalazioniByUtente(@PathVariable("idSegnalante") String idSegnalante) {
+    public List<Segnalazione> getSegnalazioniByUtente(@PathVariable("idSegnalante") final String idSegnalante) {
         return segnalazioneService.getSegnalazioniByIdSegnalante(idSegnalante);
     }
 }
