@@ -5,6 +5,7 @@ import it.unisa.diversifybe.Service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -27,8 +28,8 @@ public class PostController {
      * @return Un'entità ResponseEntity contenente il post se trovato, altrimenti uno stato 404.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable String id) {
-        Optional<Post> post = postService.findById(id);
+    public ResponseEntity<Post> getPostById(@PathVariable final String id) {
+        final Optional<Post> post = postService.findById(id);
         return post.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
@@ -39,10 +40,11 @@ public class PostController {
      * @return Il post creato.
      */
     @PostMapping("createPost")
-    public Post createPost(@RequestBody Post post) {
+    public Post createPost(@RequestBody final Post post) {
         if (post == null) {
             throw new NullPointerException("Il post fornito è nullo.");
         }
+
         postService.save(post);
         return post;
     }
@@ -55,11 +57,12 @@ public class PostController {
      * @return Un'entità ResponseEntity contenente il post aggiornato, oppure uno stato 404 se non trovato.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable String id, @RequestBody Post post) {
+    public ResponseEntity<Post> updatePost(@PathVariable final String id, @RequestBody final Post post) {
         if (post == null) {
             throw new IllegalArgumentException("Il post non può essere nullo");
         }
-        Optional<Post> updatedPost = postService.updatePost(id, post);
+
+        final Optional<Post> updatedPost = postService.updatePost(id, post);
         return updatedPost.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
@@ -71,8 +74,9 @@ public class PostController {
      * @return Una risposta senza contenuto (204) se l'eliminazione ha successo, oppure uno stato 404 se non trovato.
      */
     @PostMapping("/delete/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable String id) {
-        Optional<Post> existingPost = postService.findById(id);
+    public ResponseEntity<Void> deletePost(@PathVariable final String id) {
+        final Optional<Post> existingPost = postService.findById(id);
+
         if (existingPost.isPresent()) {
             postService.deletePost(id);
             return ResponseEntity.noContent().build(); // Stato 204 se eliminazione avviene correttamente
@@ -88,11 +92,13 @@ public class PostController {
      * @return Una lista di post associati al forum.
      */
     @GetMapping("/forum/{forumId}")
-    public ResponseEntity<List<Post>> getPostsByForumId(@PathVariable String forumId) {
-        List<Post> posts = postService.findPostsByForum(forumId); // Utilizza direttamente findByForumId()
+    public ResponseEntity<List<Post>> getPostsByForumId(@PathVariable final String forumId) {
+        final List<Post> posts = postService.findPostsByForum(forumId); // Utilizza direttamente findByForumId()
+
         if (posts.isEmpty()) {
             return ResponseEntity.notFound().build(); // Stato 404 se nessun post trovato
         }
+
         return ResponseEntity.ok(posts); // Stato 200 con i post
     }
 }

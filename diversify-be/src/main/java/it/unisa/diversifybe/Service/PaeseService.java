@@ -13,8 +13,12 @@ import java.util.stream.Collectors;
 @Service
 public class PaeseService {
 
+    private final PaeseRepository paeseRepository;
+
     @Autowired
-    private PaeseRepository paeseRepository;
+    public PaeseService(final PaeseRepository paeseRepository) {
+        this.paeseRepository = paeseRepository;
+    }
 
     /**
      * Restituisce tutti i paesi.
@@ -34,7 +38,7 @@ public class PaeseService {
      * @return un {@link Optional} contenente il paese trovato, o vuoto se non esiste.
      * @throws IllegalArgumentException se l'ID è nullo o vuoto.
      */
-    public Optional<Paese> getPaeseById(String id) {
+    public Optional<Paese> getPaeseById(final String id) {
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("L'ID del paese non può essere nullo o vuoto.");
         }
@@ -52,7 +56,7 @@ public class PaeseService {
      * @throws IllegalArgumentException se i dati del paese sono nulli o incompleti.
      * @throws IllegalStateException se il paese con lo stesso ID esiste già.
      */
-    public Paese createPaese(Paese paese) {
+    public Paese createPaese(final Paese paese) {
         if (paese == null || paese.getIdPaese() == null || paese.getIdPaese().isBlank() || paese.getNome() == null || paese.getNome().isBlank()) {
             throw new IllegalArgumentException("I dati del paese non possono essere nulli o incompleti.");
         }
@@ -74,7 +78,7 @@ public class PaeseService {
      * @return un Optional contenente il paese aggiornato, o vuoto se non esiste.
      * @throws IllegalArgumentException se l'ID o i dati aggiornati del paese sono nulli o incompleti.
      */
-    public Optional<Paese> updatePaese(String id, Paese updatedPaese) {
+    public Optional<Paese> updatePaese(final String id, final Paese updatedPaese) {
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("L'ID del paese non può essere nullo o vuoto.");
         }
@@ -82,9 +86,10 @@ public class PaeseService {
             throw new IllegalArgumentException("I dati aggiornati del paese non possono essere nulli o incompleti.");
         }
 
-        Optional<Paese> existingPaese = paeseRepository.findById(id);
+        final Optional<Paese> existingPaese = paeseRepository.findById(id);
+
         if (existingPaese.isPresent()) {
-            Paese paese = existingPaese.get();
+            final Paese paese = existingPaese.get();
             paese.setNome(updatedPaese.getNome());
             paese.setForum(updatedPaese.getForum());
             paese.setCampagneCrowdfunding(updatedPaese.getCampagneCrowdfunding());
@@ -106,21 +111,19 @@ public class PaeseService {
      * @throws IllegalArgumentException se l'ID è nullo o vuoto.
      * @throws IllegalStateException se il paese con l'ID specificato non esiste.
      */
-    public void deletePaese(String id) {
+    public void deletePaese(final String id) {
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("L'ID del paese non può essere nullo o vuoto.");
         }
-
         if (!paeseRepository.existsById(id)) {
             throw new IllegalStateException("Il paese con ID " + id + " non esiste.");
         }
-
         paeseRepository.deleteById(id);
     }
 
     /**
      * Restituisce i paesi associati a una campagna di crowdfunding specifica.
-     *<p>
+     * <p>
      * Questo metodo verifica se l'ID della campagna è nullo o vuoto e solleva un'eccezione {@link IllegalArgumentException}.
      * Restituisce una lista di paesi associati alla campagna specificata.
      *
@@ -128,15 +131,15 @@ public class PaeseService {
      * @return una lista di {@link Paese} associati alla campagna specificata.
      * @throws IllegalArgumentException se l'ID della campagna è nullo o vuoto.
      */
-    public List<Paese> findPaesiByCampagna(String idCampagna) {
+    public List<Paese> findPaesiByCampagna(final String idCampagna) {
         if (idCampagna == null || idCampagna.isBlank()) {
             throw new IllegalArgumentException("L'ID della campagna non può essere nullo o vuoto.");
         }
 
         return paeseRepository.findAll().stream()
-                .filter(p -> p.getCampagneCrowdfunding() != null &&
+                .filter((final Paese p) -> p.getCampagneCrowdfunding() != null &&
                         p.getCampagneCrowdfunding().stream()
-                                .anyMatch(campagna -> idCampagna.equals(campagna.getIdCampagna())))
+                                .anyMatch((final var campagna) -> idCampagna.equals(campagna.getIdCampagna())))
                 .collect(Collectors.toList());
     }
 
@@ -149,35 +152,37 @@ public class PaeseService {
      * @return una lista di {@link Paese} associati al benchmark specificato.
      * @throws IllegalArgumentException se l'idBenchmark è nullo o vuoto.
      */
-    public List<Paese> findPaesiByBenchmark(String idBenchmark) {
+    public List<Paese> findPaesiByBenchmark(final String idBenchmark) {
         if (idBenchmark == null || idBenchmark.isBlank()) {
             throw new IllegalArgumentException("L'ID del benchmark non può essere nullo o vuoto.");
         }
+
         return paeseRepository.findAll().stream()
-                .filter(p -> p.getBenchmark() != null &&
+                .filter((final Paese p) -> p.getBenchmark() != null &&
                         p.getBenchmark().stream()
-                                .anyMatch(b -> b.getIdBenchmark().equals(idBenchmark))) // Confronta con gli ID dei benchmark
+                                .anyMatch((final Benchmark b) -> b.getIdBenchmark().equals(idBenchmark))) // Confronta con gli ID dei benchmark
                 .collect(Collectors.toList());
     }
 
-    public Paese updateBenchmarkByPaese(String nomePaese, List<Benchmark> benchmark) {
-        if (nomePaese == null ||  nomePaese.trim().isEmpty()) {
+    public Paese updateBenchmarkByPaese(final String nomePaese, final List<Benchmark> benchmark) {
+        if (nomePaese == null || nomePaese.trim().isEmpty()) {
             throw new IllegalArgumentException("Il nome del Paese non può essere nullo o vuoto.");
         }
         if (benchmark == null || benchmark.isEmpty()) {
             throw new IllegalArgumentException("La lista di benchmark non può essere nulla o vuota.");
         }
 
-        List<Paese> paesi = paeseRepository.findByNome(nomePaese);
+        final List<Paese> paesi = paeseRepository.findByNome(nomePaese);
         Paese updated = new Paese();
+
         if (!paesi.isEmpty()) {
-            for (Paese paese : paesi) {
+            for (final Paese paese : paesi) {
                 paese.setBenchmark(benchmark); // Imposta i nuovi benchmark
                 updated = paeseRepository.save(paese); // Salva le modifiche
             }
             return updated; // Restituisce la lista di Paesi aggiornati
         }
+
         return null;
     }
-
 }

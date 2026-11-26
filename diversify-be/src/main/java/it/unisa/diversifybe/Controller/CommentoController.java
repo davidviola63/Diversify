@@ -30,8 +30,9 @@ public class CommentoController {
      */
     @PostMapping("/post/{idPost}")
     public ResponseEntity<Commento> aggiungiCommentoAPost(
-            @PathVariable String idPost,
-            @RequestBody Commento commento) {
+            @PathVariable final String idPost,
+            @RequestBody final Commento commento) {
+
         if (idPost == null || idPost.isBlank()) {
             throw new IllegalArgumentException("L'ID del post non può essere nullo o vuoto.");
         }
@@ -39,10 +40,9 @@ public class CommentoController {
             throw new IllegalArgumentException("Il commento non può essere nullo o privo di contenuto.");
         }
 
-        Commento nuovoCommento = commentoService.aggiungiCommentoAPost(idPost, commento);
+        final Commento nuovoCommento = commentoService.aggiungiCommentoAPost(idPost, commento);
         return new ResponseEntity<>(nuovoCommento, HttpStatus.CREATED);
     }
-
 
     /**
      * Endpoint per aggiungere un subcommento a un commento principale.
@@ -54,8 +54,9 @@ public class CommentoController {
      */
     @PostMapping("/subcommento/{idCommento}")
     public ResponseEntity<Subcommento> aggiungiSubcommentoACommento(
-            @PathVariable String idCommento,
-            @RequestBody Subcommento subcommento) {
+            @PathVariable final String idCommento,
+            @RequestBody final Subcommento subcommento) {
+
         if (idCommento == null || idCommento.isBlank()) {
             throw new IllegalArgumentException("L'ID del commento non può essere nullo o vuoto.");
         }
@@ -63,7 +64,7 @@ public class CommentoController {
             throw new IllegalArgumentException("Il subcommento non può essere nullo o privo di contenuto.");
         }
 
-        Subcommento nuovoSubcommento = commentoService.aggiungiSubcommentoACommento(idCommento, subcommento);
+        final Subcommento nuovoSubcommento = commentoService.aggiungiSubcommentoACommento(idCommento, subcommento);
         return new ResponseEntity<>(nuovoSubcommento, HttpStatus.CREATED);
     }
 
@@ -75,15 +76,14 @@ public class CommentoController {
      * @throws IllegalArgumentException se l'ID del post è nullo o vuoto.
      */
     @GetMapping("/post/{idPost}")
-    public ResponseEntity<List<Commento>> trovaCommentiPerPost(@PathVariable String idPost) {
+    public ResponseEntity<List<Commento>> trovaCommentiPerPost(@PathVariable final String idPost) {
         if (idPost == null || idPost.isBlank()) {
             throw new IllegalArgumentException("L'ID del post non può essere nullo o vuoto.");
         }
 
-        List<Commento> commenti = commentoService.trovaCommentiPerPost(idPost);
+        final List<Commento> commenti = commentoService.trovaCommentiPerPost(idPost);
         return ResponseEntity.ok(commenti);
     }
-
 
     /**
      * Endpoint per ottenere tutti i subcommenti associati a un commento principale.
@@ -93,13 +93,12 @@ public class CommentoController {
      * @throws IllegalArgumentException se l'ID del commento è nullo o vuoto.
      */
     @GetMapping("/subcommento/{idCommento}")
-    public ResponseEntity<List<Subcommento>> trovaSubcommentiPerCommento(@PathVariable String idCommento) {
+    public ResponseEntity<List<Subcommento>> trovaSubcommentiPerCommento(@PathVariable final String idCommento) {
         if (idCommento == null || idCommento.isBlank()) {
             throw new IllegalArgumentException("L'ID del commento non può essere nullo o vuoto.");
         }
-        List<Subcommento> subcommenti = commentoService.trovaSubcommentiPerCommento(idCommento);
+
+        final List<Subcommento> subcommenti = commentoService.trovaSubcommentiPerCommento(idCommento);
         return ResponseEntity.ok(subcommenti); // Restituisce una lista vuota se nessun subcommento è trovato
     }
-
-
 }

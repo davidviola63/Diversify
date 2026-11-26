@@ -5,14 +5,19 @@ import it.unisa.diversifybe.Service.ForumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @CrossOrigin
 public class ForumController {
 
+    private final ForumService forumService;
+
     @Autowired
-    private ForumService forumService;
+    public ForumController(final ForumService forumService) {
+        this.forumService = forumService;
+    }
 
     /**
      * Recupera tutti i forum disponibili.
@@ -32,10 +37,11 @@ public class ForumController {
      * altrimenti un errore 404 (Not Found) se il forum non esiste o l'ID è nullo o vuoto.
      */
     @GetMapping("/api/forums/{idForum}")
-    public ResponseEntity<Forum> getForumById(@PathVariable String idForum) {
+    public ResponseEntity<Forum> getForumById(@PathVariable final String idForum) {
         if (idForum == null || idForum.isBlank()) {
             return ResponseEntity.notFound().build();
         }
+
         return forumService.getForumById(idForum)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -51,15 +57,16 @@ public class ForumController {
      * o 400 (Bad Request) se il forum è nullo o contiene campi non validi.
      */
     @PostMapping("/api/forums")
-    public ResponseEntity<Forum> addForum(@RequestBody Forum forum, @RequestParam boolean ruolo) {
+    public ResponseEntity<Forum> addForum(@RequestBody final Forum forum,
+                                          @RequestParam final boolean ruolo) {
         try {
             if (forum == null) {
                 return ResponseEntity.badRequest().body(null); // Errore 400: Bad Request
             }
             return ResponseEntity.ok(forumService.addForum(forum, ruolo));
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             return ResponseEntity.status(403).body(null); // Errore 403: Forbidden
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null); // Errore 400: Bad Request
         }
     }
@@ -76,15 +83,18 @@ public class ForumController {
      * @throws IllegalArgumentException se l'ID del forum è nullo o vuoto.
      */
     @PutMapping("/api/forums/{idForum}")
-    public ResponseEntity<Forum> updateForum(@PathVariable String idForum, @RequestBody Forum updatedForum, @RequestParam boolean ruolo) {
+    public ResponseEntity<Forum> updateForum(@PathVariable final String idForum,
+                                             @RequestBody final Forum updatedForum,
+                                             @RequestParam final boolean ruolo) {
         if (idForum == null || idForum.isBlank()) {
             throw new IllegalArgumentException("ID forum non può essere nullo o vuoto.");
         }
+
         try {
             return ResponseEntity.ok(forumService.updateForum(idForum, updatedForum, ruolo));
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             return ResponseEntity.status(403).body(null);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -99,14 +109,16 @@ public class ForumController {
      * @throws IllegalArgumentException se l'ID del forum è nullo o vuoto.
      */
     @PostMapping("/api/forums/delete/{idForum}")
-    public ResponseEntity<Void> deleteForumAlternative(@PathVariable String idForum, @RequestParam boolean ruolo) {
+    public ResponseEntity<Void> deleteForumAlternative(@PathVariable final String idForum,
+                                                       @RequestParam final boolean ruolo) {
         if (idForum == null || idForum.isBlank()) {
             throw new IllegalArgumentException("ID forum non può essere nullo o vuoto.");
         }
+
         try {
             forumService.deleteForum(idForum, ruolo);
             return ResponseEntity.noContent().build();
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             return ResponseEntity.status(403).build();
         }
     }
@@ -120,15 +132,17 @@ public class ForumController {
      * @throws IllegalArgumentException se il parametro paese è nullo o vuoto.
      */
     @GetMapping("/api/forums/by-paese/{paese}")
-    public ResponseEntity<List<Forum>> getForumsByPaese(@PathVariable String paese) {
+    public ResponseEntity<List<Forum>> getForumsByPaese(@PathVariable final String paese) {
         if (paese == null || paese.isBlank()) {
             throw new IllegalArgumentException("Il campo paese non può essere nullo o vuoto.");
         }
-        List<Forum> forums = forumService.findForumsByPaese(paese);
+
+        final List<Forum> forums = forumService.findForumsByPaese(paese);
+
         if (forums.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
         return ResponseEntity.ok(forums);
     }
-
 }

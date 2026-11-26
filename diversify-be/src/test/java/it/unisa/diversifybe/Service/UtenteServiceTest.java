@@ -449,7 +449,7 @@ class UtenteServiceTest {
     @Test
     void hashPassword_ShouldThrowExceptionForUnsupportedAlgorithm() throws NoSuchAlgorithmException {
         // Crea un'istanza di UtenteService con un algoritmo non supportato
-        UtenteService brokenService = new UtenteService() {
+        UtenteService brokenService = new UtenteService(utenteRepository,jwtUtils) {
             @Override
             public String hashPassword(String password) throws NoSuchAlgorithmException {
                 MessageDigest digest = MessageDigest.getInstance("InvalidAlgorithm");

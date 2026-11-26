@@ -14,7 +14,7 @@ public class DocumentoInformativoService {
 
     private final PaeseRepository paeseRepository;
 
-    public DocumentoInformativoService(DocumentoInformativoRepository documentoInformativoRepository, PaeseRepository paeseRepository) {
+    public DocumentoInformativoService(final PaeseRepository paeseRepository) {
         this.paeseRepository = paeseRepository;
     }
 
@@ -31,19 +31,20 @@ public class DocumentoInformativoService {
      *         Se il Paese non esiste o non ha documenti, la lista sarà vuota.
      * @throws IllegalArgumentException se {@code idPaese} è nullo o vuoto.
      */
-
-    public List<DocumentoInformativo> findByIdPaese(String idPaese) {
+    public List<DocumentoInformativo> findByIdPaese(final String idPaese) {
         if (idPaese == null || idPaese.isBlank()) {
             throw new IllegalArgumentException("ID Paese non può essere nullo o vuoto.");
         }
-        List<DocumentoInformativo> documenti= new ArrayList<>();
-        List<Paese> paesi= paeseRepository.findAll();
-        for (Paese paese: paesi) {
+
+        final List<DocumentoInformativo> documenti = new ArrayList<>();
+        final List<Paese> paesi = paeseRepository.findAll();
+
+        for (final Paese paese : paesi) {
             if (paese.getIdPaese().equals(idPaese)) {
                 documenti.addAll(paese.getDocumentiInformativi());
             }
         }
+
         return documenti;
     }
-
 }

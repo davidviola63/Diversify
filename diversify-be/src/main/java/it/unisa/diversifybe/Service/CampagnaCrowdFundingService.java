@@ -29,16 +29,17 @@ public class CampagnaCrowdFundingService {
      * @return una lista di tutte le campagne disponibili.
      */
     public List<CampagnaCrowdFunding> getAllCampagne() {
-        List<CampagnaCrowdFunding> allCampaigns = new ArrayList<>();
-        List<Paese> paesi = paeseRepository.findAll();
-        for (Paese paese : paesi) {
+        final List<CampagnaCrowdFunding> allCampaigns = new ArrayList<>();
+        final List<Paese> paesi = paeseRepository.findAll();
+
+        for (final Paese paese : paesi) {
             if (paese.getCampagneCrowdfunding() != null) {
                 allCampaigns.addAll(paese.getCampagneCrowdfunding());
             }
         }
+
         return allCampaigns;
     }
-
 
     /**
      * Cerca una campagna di crowdfunding in base al suo ID.
@@ -46,17 +47,17 @@ public class CampagnaCrowdFundingService {
      * @param idCampagna l'ID della campagna.
      * @return un Optional contenente la campagna se trovata, altrimenti vuoto.
      */
-    public Optional<CampagnaCrowdFunding> getCampagnaByIdCampagna(String idCampagna) {
+    public Optional<CampagnaCrowdFunding> getCampagnaByIdCampagna(final String idCampagna) {
         if (idCampagna == null || idCampagna.isBlank()) {
             throw new IllegalArgumentException("L'ID della campagna non può essere nullo o vuoto.");
         }
 
         // Cerca nei documenti della collection Paese
-        List<Paese> paesi = paeseRepository.findAll(); // Assumendo che esista un metodo per ottenere tutti i Paesi
+        final List<Paese> paesi = paeseRepository.findAll(); // Assumendo che esista un metodo per ottenere tutti i Paesi
 
-        for (Paese paese : paesi) {
+        for (final Paese paese : paesi) {
             if (paese.getCampagneCrowdfunding() != null) {
-                for (CampagnaCrowdFunding campagna : paese.getCampagneCrowdfunding()) {
+                for (final CampagnaCrowdFunding campagna : paese.getCampagneCrowdfunding()) {
                     if (idCampagna.equals(campagna.getIdCampagna())) {
                         return Optional.of(campagna); // Restituisci la campagna trovata
                     }
@@ -67,21 +68,19 @@ public class CampagnaCrowdFundingService {
         return Optional.empty(); // Restituisci un Optional vuoto se non trovata
     }
 
-
     /**
      * Restituisce tutte le campagne con un titolo esatto specificato.
      *
      * @param titolo il titolo della campagna.
      * @return una lista di campagne con il titolo specificato.
      */
-
-    public List<CampagnaCrowdFunding> getCampagneByTitolo(String titolo) {
+    public List<CampagnaCrowdFunding> getCampagneByTitolo(final String titolo) {
         if (titolo == null || titolo.isBlank()) {
             throw new IllegalArgumentException("Il titolo non può essere nullo o vuoto.");
         }
+
         return repository.findByTitolo(titolo);
     }
-
 
     /**
      * Cerca le campagne che contengono una parola chiave nel titolo.
@@ -89,15 +88,15 @@ public class CampagnaCrowdFundingService {
      * @param keyword la parola chiave da cercare nel titolo.
      * @return una lista di campagne che contengono la parola chiave.
      */
-
-    public List<CampagnaCrowdFunding> getCampagneByTitoloContaining(String keyword) {
+    public List<CampagnaCrowdFunding> getCampagneByTitoloContaining(final String keyword) {
         return repository.findByTitoloContaining(keyword);
     }
 
-    public List<CampagnaCrowdFunding> getCampagneByDataInizio(LocalDate dataInizio) {
+    public List<CampagnaCrowdFunding> getCampagneByDataInizio(final LocalDate dataInizio) {
         if (dataInizio == null) {
             throw new IllegalArgumentException("Lo stato non può essere nullo o vuoto.");
         }
+
         return repository.findByDataInizio(dataInizio);
     }
 
@@ -107,11 +106,11 @@ public class CampagnaCrowdFundingService {
      * @param stato lo stato della campagna.
      * @return una lista di campagne con lo stato specificato.
      */
-
-    public List<CampagnaCrowdFunding> getCampagneByStato(String stato) {
+    public List<CampagnaCrowdFunding> getCampagneByStato(final String stato) {
         if (stato == null || stato.isBlank()) {
             throw new IllegalArgumentException("Lo stato non può essere nullo o vuoto.");
         }
+
         return repository.findByStato(stato);
     }
 
@@ -121,13 +120,11 @@ public class CampagnaCrowdFundingService {
      * @param paese il Paese in cui sono state pubblicate.
      * @return una lista di campagne pubblicate in quel Paese
      */
+    public List<CampagnaCrowdFunding> findCampagneByPaese(final String paese) {
+        final List<Paese> paesi = paeseRepository.findByNome(paese);
+        final List<CampagnaCrowdFunding> campagneEstratte = new ArrayList<>();
 
-
-    public List<CampagnaCrowdFunding> findCampagneByPaese(String paese) {
-        List<Paese> paesi = paeseRepository.findByNome(paese);
-        List<CampagnaCrowdFunding> campagneEstratte = new ArrayList<>();
-
-        for (Paese p : paesi) {
+        for (final Paese p : paesi) {
             if (p.getCampagneCrowdfunding() != null) {
                 campagneEstratte.addAll(p.getCampagneCrowdfunding());
             }
@@ -136,19 +133,17 @@ public class CampagnaCrowdFundingService {
         return campagneEstratte;
     }
 
-
-
     /**
      * Cerca le campagne in base alla data prevista di fine.
      *
      * @param dataPrevistaFine la data prevista di fine della campagna.
      * @return una lista di campagne con la data di fine prevista specificata.
      */
-
-    public List<CampagnaCrowdFunding> getCampagneByDataPrevistaFine(LocalDate dataPrevistaFine) {
+    public List<CampagnaCrowdFunding> getCampagneByDataPrevistaFine(final LocalDate dataPrevistaFine) {
         if (dataPrevistaFine == null) {
             throw new IllegalArgumentException("La data prevista di fine non può essere nulla.");
         }
+
         return repository.findByDataPrevistaFine(dataPrevistaFine);
     }
 
@@ -158,28 +153,28 @@ public class CampagnaCrowdFundingService {
      * @param campagna i dati della nuova campagna.
      * @return la campagna creata.
      */
-
-    public CampagnaCrowdFunding createCampagna(CampagnaCrowdFunding campagna) {
+    public CampagnaCrowdFunding createCampagna(final CampagnaCrowdFunding campagna) {
         if (campagna == null || campagna.getTitolo() == null || campagna.getTitolo().isBlank()) {
             throw new IllegalArgumentException("I dati della campagna non possono essere nulli o incompleti.");
         }
-        String paese=campagna.getPaese();
+
+        final String paese = campagna.getPaese();
+
         // Trova il paese di riferimento
-        Paese paeseEntity = paeseRepository.findByNome(paese).stream().findFirst()
+        final Paese paeseEntity = paeseRepository.findByNome(paese).stream().findFirst()
                 .orElseThrow(() -> new RuntimeException("Paese non trovato: " + paese));
 
         // Aggiungi la campagna alla lista
         if (paeseEntity.getCampagneCrowdfunding() == null) {
             paeseEntity.setCampagneCrowdfunding(new ArrayList<>());
         }
+
         paeseEntity.getCampagneCrowdfunding().add(campagna);
 
         // Salva il paese aggiornato
         paeseRepository.save(paeseEntity);
         return campagna;
     }
-
-
 
     /**
      * Aggiorna una campagna esistente.
@@ -189,8 +184,7 @@ public class CampagnaCrowdFundingService {
      * @return la campagna aggiornata.
      * @throws RuntimeException se la campagna con l'ID specificato non viene trovata.
      */
-
-    public CampagnaCrowdFunding updateCampagna(String idCampagna, CampagnaCrowdFunding updatedCampagna) {
+    public CampagnaCrowdFunding updateCampagna(final String idCampagna, final CampagnaCrowdFunding updatedCampagna) {
         if (idCampagna == null || idCampagna.isBlank()) {
             throw new IllegalArgumentException("L'ID della campagna non può essere nullo o vuoto.");
         }
@@ -200,13 +194,12 @@ public class CampagnaCrowdFundingService {
         }
 
         // Cerca nei documenti della collection Paese
-        List<Paese> paesi = paeseRepository.findAll();
+        final List<Paese> paesi = paeseRepository.findAll();
 
-        for (Paese paese : paesi) {
+        for (final Paese paese : paesi) {
             if (paese.getCampagneCrowdfunding() != null) {
-                for (CampagnaCrowdFunding campagna : paese.getCampagneCrowdfunding()) {
+                for (final CampagnaCrowdFunding campagna : paese.getCampagneCrowdfunding()) {
                     if (idCampagna.equals(campagna.getIdCampagna())) {
-
                         // Aggiorna i dettagli della campagna
                         campagna.setTitolo(updatedCampagna.getTitolo());
                         campagna.setDescrizione(updatedCampagna.getDescrizione());
@@ -237,23 +230,23 @@ public class CampagnaCrowdFundingService {
      * @param idCampagna l'ID della campagna da eliminare.
      * @throws RuntimeException se la campagna con l'ID specificato non viene trovata.
      */
-
-    public void deleteCampagna(String idCampagna) {
+    public void deleteCampagna(final String idCampagna) {
         if (idCampagna == null || idCampagna.isBlank()) {
             throw new IllegalArgumentException("L'ID della campagna non può essere nullo o vuoto.");
         }
 
         // Cerca nei documenti della collection Paese
-        List<Paese> paesi = paeseRepository.findAll();
-
+        final List<Paese> paesi = paeseRepository.findAll();
         boolean campagnaTrovata = false;
 
-        for (Paese paese : paesi) {
+        for (final Paese paese : paesi) {
             if (paese.getCampagneCrowdfunding() != null) {
-                List<CampagnaCrowdFunding> campagne = paese.getCampagneCrowdfunding();
+                final List<CampagnaCrowdFunding> campagne = paese.getCampagneCrowdfunding();
 
                 // Rimuovi la campagna con l'ID specificato
-                boolean campagnaRimossa = campagne.removeIf(campagna -> idCampagna.equals(campagna.getIdCampagna()));
+                final boolean campagnaRimossa = campagne.removeIf(
+                        (final CampagnaCrowdFunding campagna) -> idCampagna.equals(campagna.getIdCampagna())
+                );
 
                 if (campagnaRimossa) {
                     // Salva il Paese aggiornato
@@ -268,6 +261,4 @@ public class CampagnaCrowdFundingService {
             throw new RuntimeException("Campagna non trovata con ID: " + idCampagna);
         }
     }
-
-
 }

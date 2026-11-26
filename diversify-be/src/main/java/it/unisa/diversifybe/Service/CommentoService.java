@@ -16,11 +16,15 @@ import java.util.*;
 @Service
 public class CommentoService {
 
-    @Autowired
-    private CommentoRepository commentoRepository;
+    private final CommentoRepository commentoRepository;
+    private final ForumRepository forumRepository;
 
     @Autowired
-    private ForumRepository forumRepository;
+    public CommentoService(final CommentoRepository commentoRepository,
+                           final ForumRepository forumRepository) {
+        this.commentoRepository = commentoRepository;
+        this.forumRepository = forumRepository;
+    }
 
     /**
      * Aggiunge un commento a un post specifico.
@@ -30,17 +34,8 @@ public class CommentoService {
      * @return Il commento salvato.
      * @throws IllegalArgumentException se l'ID del post o il commento non sono validi.
      */
-    public Commento aggiungiCommentoAPost(String idPost, Commento commento) {
-        if (idPost == null || idPost.isBlank()) {
-            throw new IllegalArgumentException("L'ID del post non può essere nullo o vuoto.");
-        }
-        if (commento == null) {
-            throw new IllegalArgumentException("Il commento non può essere nullo.");
-        }
-        if (commento.getIdAutore() == null || commento.getIdAutore().isBlank() ||
-                commento.getContenuto() == null || commento.getContenuto().isBlank()) {
-            throw new IllegalArgumentException("Il commento deve avere un autore e un contenuto valido.");
-        }
+    public Commento aggiungiCommentoAPost(final String idPost, final Commento commento) {
+        validaCommento(idPost, commento);
 
         if (commento.getIdCommento() == null || commento.getIdCommento().isEmpty()) {
             commento.setIdCommento(UUID.randomUUID().toString());
@@ -50,27 +45,49 @@ public class CommentoService {
         if (commento.getDataCreazione() == null) {
             commento.setDataCreazione(new Date());
         }
+
         if (commento.getSubcommenti() == null) {
             commento.setSubcommenti(new ArrayList<>());
         }
+
         commento.setLike(0);
 
-        List<Forum> forums = forumRepository.findAll();
-        for(Forum forum : forums) {
-            List<Post> posts = forum.getPost();
-            if(posts != null) {
-                for(Post post : posts) {
-                    if(post.getIdPost().equals(idPost)) {
-                        List<Commento> commenti = post.getCommenti();
-                        commenti.add(commento);
-                        post.setCommenti(commenti);
-                        forum.setPost(posts);
-                        forumRepository.save(forum);
-                    }
+        final List<Forum> forums = forumRepository.findAll();
+
+        for (final Forum forum : forums) {
+            final List<Post> posts = forum.getPost();
+
+            if (posts == null) {
+                continue;
+            }
+
+            for (final Post post : posts) {
+                if (post.getIdPost().equals(idPost)) {
+                    final List<Commento> commenti = post.getCommenti();
+                    commenti.add(commento);
+                    post.setCommenti(commenti);
+                    forum.setPost(posts);
+                    forumRepository.save(forum);
                 }
             }
         }
+
         return commento;
+    }
+
+    private void validaCommento(final String idPost, final Commento commento) {
+        if (idPost == null || idPost.isBlank()) {
+            throw new IllegalArgumentException("L'ID del post non può essere nullo o vuoto.");
+        }
+
+        if (commento == null) {
+            throw new IllegalArgumentException("Il commento non può essere nullo.");
+        }
+
+        if (commento.getIdAutore() == null || commento.getIdAutore().isBlank() ||
+                commento.getContenuto() == null || commento.getContenuto().isBlank()) {
+            throw new IllegalArgumentException("Il commento deve avere un autore e un contenuto valido.");
+        }
     }
 
     /**
@@ -81,36 +98,32 @@ public class CommentoService {
      * @return Il subcommento salvato.
      * @throws IllegalArgumentException se il subcommento è nullo o contiene campi mancanti/non validi.
      */
-    public Subcommento aggiungiSubcommentoACommento(String idCommento, Subcommento subcommento) {
-        if (idCommento == null || idCommento.isBlank()) {
-            throw new IllegalArgumentException("L'ID del commento non può essere nullo o vuoto.");
-        }
-        if (subcommento == null) {
-            throw new IllegalArgumentException("Il subcommento non può essere nullo.");
-        }
-        if (subcommento.getIdAutore() == null || subcommento.getIdAutore().isBlank() ||
-                subcommento.getContenuto() == null || subcommento.getContenuto().isBlank()) {
-            throw new IllegalArgumentException("Il subcommento deve avere un autore e un contenuto valido.");
-        }
+    public Subcommento aggiungiSubcommentoACommento(final String idCommento, final Subcommento subcommento) {
+        validaSubcommento(idCommento, subcommento);
 
         // Imposta i dati del subcommento
         subcommento.setDataCreazione(new Date());
 
-        List<Forum> forums = forumRepository.findAll();
-        for(Forum forum : forums) {
-            List<Post> posts = forum.getPost();
-            if(posts != null) {
-                for(Post post : posts) {
-                    List<Commento> commenti = post.getCommenti();
-                    for(Commento commento : commenti) {
-                        if(commento.getIdCommento()!=null && commento.getIdCommento().equals(idCommento)) {
-                            List<Subcommento> subcommenti = commento.getSubcommenti();
-                            subcommenti.add(subcommento);
-                            commento.setSubcommenti(subcommenti);
-                            post.setCommenti(commenti);
-                            forum.setPost(posts);
-                            forumRepository.save(forum);
-                        }
+        final List<Forum> forums = forumRepository.findAll();
+
+        for (final Forum forum : forums) {
+            final List<Post> posts = forum.getPost();
+
+            if (posts == null) {
+                continue;
+            }
+
+            for (final Post post : posts) {
+                final List<Commento> commenti = post.getCommenti();
+
+                for (final Commento commento : commenti) {
+                    if (commento.getIdCommento() != null && commento.getIdCommento().equals(idCommento)) {
+                        final List<Subcommento> subcommenti = commento.getSubcommenti();
+                        subcommenti.add(subcommento);
+                        commento.setSubcommenti(subcommenti);
+                        post.setCommenti(commenti);
+                        forum.setPost(posts);
+                        forumRepository.save(forum);
                     }
                 }
             }
@@ -119,13 +132,28 @@ public class CommentoService {
         return subcommento;
     }
 
+    private void validaSubcommento(final String idCommento, final Subcommento subcommento) {
+        if (idCommento == null || idCommento.isBlank()) {
+            throw new IllegalArgumentException("L'ID del commento non può essere nullo o vuoto.");
+        }
+
+        if (subcommento == null) {
+            throw new IllegalArgumentException("Il subcommento non può essere nullo.");
+        }
+
+        if (subcommento.getIdAutore() == null || subcommento.getIdAutore().isBlank() ||
+                subcommento.getContenuto() == null || subcommento.getContenuto().isBlank()) {
+            throw new IllegalArgumentException("Il subcommento deve avere un autore e un contenuto valido.");
+        }
+    }
+
     /**
      * Recupera tutti i commenti associati a un post.
      *
      * @param idPost L'ID del post.
      * @return La lista dei commenti.
      */
-    public List<Commento> trovaCommentiPerPost(String idPost) {
+    public List<Commento> trovaCommentiPerPost(final String idPost) {
         return commentoRepository.findByIdPost(idPost);
     }
 
@@ -136,8 +164,7 @@ public class CommentoService {
      * @return Un {@link Optional} contenente il commento se trovato,
      * altrimenti un {@link Optional#empty()} se non esiste un commento con l'ID specificato.
      */
-
-    public Optional<Commento> findById(String commentoId) {
+    public Optional<Commento> findById(final String commentoId) {
         return commentoRepository.findById(commentoId);
     }
 
@@ -147,14 +174,13 @@ public class CommentoService {
      * @param commento L'oggetto {@link Commento} da salvare o aggiornare.
      *                 Se il commento esiste già, verrà aggiornato; altrimenti, verrà creato un nuovo record.
      */
-    public void save(Commento commento) {
+    public void save(final Commento commento) {
         commentoRepository.save(commento);
     }
 
-    public List<Subcommento> trovaSubcommentiPerCommento(String idCommento) {
+    public List<Subcommento> trovaSubcommentiPerCommento(final String idCommento) {
         return commentoRepository.findById(idCommento)
                 .map(Commento::getSubcommenti)
                 .orElse(List.of());
     }
-
 }

@@ -21,7 +21,6 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:4200")  // Permette richieste solo da localhost:4200
 public class UtenteController {
 
-
     private final UtenteService utenteService;
     private final JwtUtils jwtUtils;
 
@@ -30,7 +29,6 @@ public class UtenteController {
      *
      * @param utenteService il servizio che gestisce la logica di autenticazione e registrazione.
      */
-
     public UtenteController(UtenteService utenteService, JwtUtils jwtUtils) {
         this.utenteService = utenteService;
         this.jwtUtils = jwtUtils;
@@ -43,19 +41,18 @@ public class UtenteController {
      * @param loginRequest i dati di login inviati dal client, contenenti username e password.
      * @return una risposta HTTP con il token JWT se l'autenticazione è corretta, altrimenti un messaggio di errore.
      */
-
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@RequestBody final LoginRequest loginRequest) {
         try {
             // Prova ad autenticare l'utente utilizzando il servizio
-            JwtResponse jwtResponse = utenteService.authenticateUser(loginRequest);
+            final JwtResponse jwtResponse = utenteService.authenticateUser(loginRequest);
             if (jwtResponse != null) {
                 // Se l'autenticazione è riuscita, restituisci il JWT token
                 return ResponseEntity.ok(jwtResponse);
             }
             // Se username o password sono errati, restituisci un errore
             return ResponseEntity.status(401).body("Username o password errati");
-        } catch (NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             // Se c'è un errore nell'algoritmo di hashing della password, restituisci un errore generico
             return ResponseEntity.status(500).body("Errore interno durante la verifica della password");
         }
@@ -68,12 +65,11 @@ public class UtenteController {
      * @param registerRequest i dati di registrazione inviati dal client, contenenti username, password ed email.
      * @return una risposta HTTP che indica se la registrazione è riuscita o se ci sono errori nei dati inviati.
      */
-
     @PostMapping("/registrazione")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<?> registerUser(@RequestBody final RegisterRequest registerRequest) {
         try {
             // Prova a registrare il nuovo utente
-            String result = utenteService.registerUser(registerRequest);
+            final String result = utenteService.registerUser(registerRequest);
             if (result.equals("Utente registrato con successo!")) {
                 // Se la registrazione è riuscita, restituisci un messaggio di successo
                 return ResponseEntity.ok(Map.of("message", result));
@@ -81,7 +77,7 @@ public class UtenteController {
                 // Se ci sono errori (ad esempio, l'username o l'email sono già in uso), restituisci un errore
                 return ResponseEntity.status(400).body(result);
             }
-        } catch (NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             // Se c'è un errore nell'algoritmo di hashing della password, restituisci un errore
             return ResponseEntity.status(500).body("Errore durante la registrazione");
         }
@@ -109,40 +105,37 @@ public class UtenteController {
      *     <li>HTTP 500 INTERNAL SERVER ERROR: se si verifica un errore nell'hashing della password.</li>
      * </ul>
      */
-
     @PostMapping("/cambia_password")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest, @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<?> changePassword(@RequestBody final ChangePasswordRequest changePasswordRequest,
+                                            @RequestHeader("Authorization") final String authorizationHeader) {
         try {
-            String token = authorizationHeader.substring(7); // Rimuovi "Bearer " dall'intestazione del token
-            String username = jwtUtils.validateToken(token); // Utilizza l'oggetto jwtUtils per validare il token
-
+            final String token = authorizationHeader.substring(7); // Rimuovi "Bearer " dall'intestazione del token
+            final String username = jwtUtils.validateToken(token); // Utilizza l'oggetto jwtUtils per validare il token
             if (username == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token non valido");
             }
 
-            Optional<Utente> utenteOptional = utenteService.findByUsername(username);
+            final Optional<Utente> utenteOptional = utenteService.findByUsername(username);
             if (utenteOptional.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utente non trovato");
             }
 
-            Utente utente = utenteOptional.get();
+            final Utente utente = utenteOptional.get();
 
             // Verifica se la password corrente è corretta
-            String hashedCurrentPassword = utenteService.hashPassword(changePasswordRequest.getCurrentPassword());
+            final String hashedCurrentPassword = utenteService.hashPassword(changePasswordRequest.getCurrentPassword());
             if (!hashedCurrentPassword.equals(utente.getPasswordHash())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Password corrente errata");
             }
 
             // Aggiorna la password con quella nuova criptata
-            String hashedNewPassword = utenteService.hashPassword(changePasswordRequest.getNewPassword());
+            final String hashedNewPassword = utenteService.hashPassword(changePasswordRequest.getNewPassword());
             utente.setPasswordHash(hashedNewPassword);
 
             // Salva l'utente con la nuova password tramite il repository del service
             utenteService.save(utente);
-
             return ResponseEntity.ok(Map.of("message", "Password aggiornata con successo"));
-
-        } catch (NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore nell'hashing della password");
         }
     }
@@ -169,9 +162,8 @@ public class UtenteController {
      *     <li>HTTP 500 INTERNAL SERVER ERROR: se si verifica un errore durante l'hashing della password.</li>
      * </ul>
      */
-
     @PostMapping("/recupera_password")
-    public ResponseEntity<?> recuperaPassword(@RequestBody RecuperaPasswordRequest recuperaPasswordRequest) {
+    public ResponseEntity<?> recuperaPassword(@RequestBody final RecuperaPasswordRequest recuperaPasswordRequest) {
         try {
             // Verifica che i campi obbligatori siano presenti
             if (recuperaPasswordRequest.getEmail() == null || recuperaPasswordRequest.getEmail().isBlank()) {
@@ -185,7 +177,7 @@ public class UtenteController {
             }
 
             // Passo 1: Verifica email e codice fiscale
-            Optional<Utente> utenteOptional = utenteService.findByEmailAndCodiceFiscale(
+            final Optional<Utente> utenteOptional = utenteService.findByEmailAndCodiceFiscale(
                     recuperaPasswordRequest.getEmail(),
                     recuperaPasswordRequest.getCodiceFiscale()
             );
@@ -194,13 +186,13 @@ public class UtenteController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utente non trovato con i dati forniti");
             }
 
-            Utente utente = utenteOptional.get();
+            final Utente utente = utenteOptional.get();
 
             // Passo 2: Verifica risposta personale
             String hashedAnswer;
             try {
                 hashedAnswer = utenteService.hashPassword(recuperaPasswordRequest.getPersonalAnswer());
-            } catch (NoSuchAlgorithmException e) {
+            } catch (final NoSuchAlgorithmException e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante la crittografia dei dati");
             }
 
@@ -213,22 +205,17 @@ public class UtenteController {
             String hashedNewPassword;
             try {
                 hashedNewPassword = utenteService.hashPassword(recuperaPasswordRequest.getNewPassword());
-            } catch (NoSuchAlgorithmException e) {
+            } catch (final NoSuchAlgorithmException e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante la crittografia dei dati");
             }
 
             utente.setPasswordHash(hashedNewPassword);
             utenteService.save(utente);
-
             return ResponseEntity.ok("Password aggiornata con successo");
-
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
-
-
 
     /**
      * Endpoint per recuperare un utente a partire dal token JWT.
@@ -251,8 +238,7 @@ public class UtenteController {
         }
 
         // Recupera l'utente dal servizio
-        Optional<Utente> utente = utenteService.getUserFromToken(token);
-
+        final Optional<Utente> utente = utenteService.getUserFromToken(token);
         if (utente.isPresent()) {
             return ResponseEntity.ok(utente.get());
         } else {
@@ -279,8 +265,8 @@ public class UtenteController {
      */
     @PostMapping("/elimina_account")
     public ResponseEntity<?> deleteAccount(
-            @RequestBody String password,
-            @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+            @RequestBody final String password,
+            @RequestHeader(value = "Authorization", required = false) final String authorizationHeader) {
 
         // Controllo sulla presenza dell'header Authorization
         if (authorizationHeader == null || authorizationHeader.isBlank()) {
@@ -295,7 +281,7 @@ public class UtenteController {
         }
 
         // Estrae il token dal prefisso "Bearer "
-        String token = authorizationHeader.substring(7).trim();
+        final String token = authorizationHeader.substring(7).trim();
 
         // Se il token è vuoto dopo il prefisso "Bearer "
         if (token.isEmpty()) {
@@ -304,7 +290,7 @@ public class UtenteController {
         }
 
         // Chiamata al servizio per eliminare l'utente
-        String response = utenteService.deleteUser(token, password);
+        final String response = utenteService.deleteUser(token, password);
 
         // Mappa le risposte del servizio ai rispettivi stati HTTP
         return switch (response) {
@@ -332,8 +318,8 @@ public class UtenteController {
      *         (NOT_FOUND) e un messaggio di errore.
      */
     @PostMapping("/recupera_domanda")
-    public ResponseEntity<?> getDomandaUser(@RequestBody String email) {
-        Utente utente = utenteService.getUserByEmail(email);
+    public ResponseEntity<?> getDomandaUser(@RequestBody final String email) {
+        final Utente utente = utenteService.getUserByEmail(email);
         if (utente != null) {
             return ResponseEntity.ok(utente);
         } else {
@@ -349,14 +335,12 @@ public class UtenteController {
      *         altrimenti restituisce un messaggio di errore.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable String id) {
-        Optional<Utente> utenteOptional = utenteService.findById(id);
-
+    public ResponseEntity<?> getUserById(@PathVariable final String id) {
+        final Optional<Utente> utenteOptional = utenteService.findById(id);
         if (utenteOptional.isPresent()) {
             return ResponseEntity.ok(utenteOptional.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utente non trovato.");
         }
     }
-
 }
