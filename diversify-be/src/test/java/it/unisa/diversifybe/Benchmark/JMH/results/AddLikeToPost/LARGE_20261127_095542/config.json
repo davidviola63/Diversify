@@ -1,0 +1,6 @@
+{
+    "Benchmark":  "it.unisa.diversifybe.Benchmark.JMH.AddLikeToPostTestJMH.addLikeToPost",
+    "Parameters":  {
+                       "datasetSize":  "LARGE"
+                   }
+}
