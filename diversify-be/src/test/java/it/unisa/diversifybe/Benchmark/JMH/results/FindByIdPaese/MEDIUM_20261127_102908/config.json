@@ -1,0 +1,6 @@
+{
+    "Benchmark":  "it.unisa.diversifybe.Benchmark.JMH.FindByIdPaeseTestJMH.findByIdPaese",
+    "Parameters":  {
+                       "datasetSize":  "MEDIUM"
+                   }
+}
