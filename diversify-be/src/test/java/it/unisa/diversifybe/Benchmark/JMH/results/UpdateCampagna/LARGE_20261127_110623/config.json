@@ -1,0 +1,6 @@
+{
+    "Benchmark":  "it.unisa.diversifybe.Benchmark.JMH.UpdateCampagnaTestJMH.updateCampagna",
+    "Parameters":  {
+                       "datasetSize":  "LARGE"
+                   }
+}
